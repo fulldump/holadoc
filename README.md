@@ -22,6 +22,8 @@ javascript, golang, php, etc).
 
 References to images will be automatically resized and formatted.
 
+Code snippets should also be pretty printed and hightlighted
+
 ## Specific details
 
 ### Name convention

@@ -50,29 +50,69 @@ func main() {
 	}
 
 	traverseNodes(root, func(node *Node) {
-		for _, variation := range node.Variations {
 
-			newFilename := path.Join(c.Www, getOutputPath(node, variation)+".html")
+		for _, version := range versions {
+			for _, language := range languages {
 
-			os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
+				var variation *Variation
+				{ // choose best possible variation
+					for _, v := range node.Variations {
+						if v.Language == language && v.Version == version {
+							variation = v
+							break
+						}
+					}
 
-			f, err := os.Create(newFilename)
-			if err != nil {
-				panic(err.Error())
-			}
+					// fallback version
+					if variation == nil {
+						// todo: sort and filter by version (should be less or eq than "version")
+						for _, v := range node.Variations {
+							if v.Version == version {
+								variation = v
+								break
+							}
+						}
+					}
 
-			_, err = f.WriteString(
-				fmt.Sprintln(variation.Url, variation.Language, variation.Filename, variation.Version),
-			)
-			if err != nil {
-				panic(err.Error())
-			}
+					if variation == nil {
+						for _, v := range node.Variations {
+							if v.Language == language {
+								variation = v
+								break
+							}
+						}
+					}
 
-			err = f.Close()
-			if err != nil {
-				panic(err.Error())
+					if variation == nil {
+						fmt.Println("skip:", node.Path)
+						continue
+					}
+				}
+
+				newFilename := path.Join(c.Www, getOutputPath(node, variation)+".html")
+
+				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
+
+				f, err := os.Create(newFilename)
+				if err != nil {
+					panic(err.Error())
+				}
+
+				_, err = f.WriteString(
+					fmt.Sprintln(variation.Url, variation.Language, variation.Filename, variation.Version),
+				)
+				if err != nil {
+					panic(err.Error())
+				}
+
+				err = f.Close()
+				if err != nil {
+					panic(err.Error())
+				}
+
 			}
 		}
+
 	})
 
 }
