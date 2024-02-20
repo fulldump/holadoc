@@ -89,7 +89,7 @@ func main() {
 					}
 				}
 
-				newFilename := path.Join(c.Www, getOutputPath(node, variation)+".html")
+				newFilename := path.Join(c.Www, version, language, getOutputPath(node, variation)+".html")
 
 				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
 
@@ -185,8 +185,6 @@ func getOutputPath(node *Node, variation *Variation) string {
 
 		node = node.Parent
 	}
-
-	result = append([]string{variation.Language, variation.Version}, result...)
 
 	return path.Join(result...)
 }
