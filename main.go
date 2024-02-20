@@ -63,7 +63,7 @@ func main() {
 						}
 					}
 
-					// fallback version
+					// fallback by version
 					if variation == nil {
 						// todo: sort and filter by version (should be less or eq than "version")
 						for _, v := range node.Variations {
@@ -74,12 +74,21 @@ func main() {
 						}
 					}
 
+					// fallback by language
 					if variation == nil {
 						for _, v := range node.Variations {
 							if v.Language == language {
 								variation = v
 								break
 							}
+						}
+					}
+
+					// fallback by any variation (version must be less or equal!)
+					if variation == nil {
+						for _, v := range node.Variations {
+							variation = v
+							break
 						}
 					}
 
