@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path"
 	"sort"
@@ -19,6 +20,7 @@ type config struct {
 	Www       string `json:"www"`
 	Versions  string `json:"versions" usage:"default version is the first one"`
 	Languages string `json:"languages" usage:"default language is the first one"`
+	Serve     string `json:"serve" usage:"Address to serve files locally, example ':8080'"`
 }
 
 // todo: avoid globals
@@ -34,6 +36,16 @@ func main() {
 		Languages: "en,es",
 	}
 	goconfig.Read(&c)
+
+	if c.Serve != "" {
+
+		s := &http.Server{
+			Addr:    c.Serve,
+			Handler: http.FileServer(http.Dir(c.Www)),
+		}
+
+		s.ListenAndServe()
+	}
 
 	versions = strings.Split(c.Versions, ",")
 	languages = strings.Split(c.Languages, ",")
@@ -193,7 +205,7 @@ func getBestVariation(variations []*Variation, language, version string) *Variat
 	return variation
 }
 
-var basepath = "/holadoc/www"
+var basepath = "/"
 
 func getLink(n *Node, lang, version string) string {
 	variation := getBestVariation(n.Variations, lang, version)
@@ -205,10 +217,6 @@ func getIndex(n *Node, lang, version string) string {
 	result := ""
 
 	for _, child := range n.Children {
-
-		// variation := getBestVariation(child.Variations, lang, version)
-		// link := path.Join(basepath, version, lang, getOutputPath(child, variation)+".html")
-		//
 
 		link := getLink(child, lang, version)
 
