@@ -11,8 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	"golang.org/x/net/html"
+
 	"github.com/fulldump/goconfig"
-	//    "golang.org/x/net/html"
 )
 
 type config struct {
@@ -86,24 +87,26 @@ func main() {
 					fmt.Sprintln(`<!--`, variation.Url, variation.Language, variation.Filename, variation.Version, `-->`),
 				)
 
-				fmt.Fprintln(f, `<div class="top">`)
-				fmt.Fprintln(f, `Languages:`)
-				for _, l := range languages {
-					fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
+				{ // top bar
+					fmt.Fprintln(f, `<div class="top">`)
+					fmt.Fprintln(f, `Languages:`)
+					for _, l := range languages {
+						fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
+					}
+					fmt.Fprintln(f, `<br>`)
+					fmt.Fprintln(f, `Versions:`)
+					for _, v := range versions {
+						fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
+					}
+					fmt.Fprintln(f, `</div>`)
 				}
-				fmt.Fprintln(f, `<br>`)
-				fmt.Fprintln(f, `Versions:`)
-				for _, v := range versions {
-					fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
-				}
-				fmt.Fprintln(f, `</div>`)
 
 				fmt.Fprintln(f, `<style>
-.index {
+.tree {
   float: left;
 }
 
-.children {
+.tree .children {
   padding-left: 16px;
 }
 
@@ -111,7 +114,7 @@ func main() {
   padding-left: 200px;
 }
 
-.alert {
+.content .alert {
   color: dodgerblue;
   background-color: ;
   border: solid dodgerblue 1px;
@@ -126,10 +129,12 @@ func main() {
 
 </style>`)
 
-				f.WriteString(`<div class="index">` + "\n")
-				index := getIndex(root, language, version)
-				f.WriteString(index)
-				f.WriteString(`</div>` + "\n")
+				{ // tree
+					f.WriteString(`<div class="tree">` + "\n")
+					index := getIndex(root, language, version)
+					f.WriteString(index)
+					f.WriteString(`</div>` + "\n")
+				}
 
 				// Process output (for now, just copy the source file)
 				src, err := os.Open(variation.Filename)
@@ -137,14 +142,16 @@ func main() {
 					panic(err.Error())
 				}
 
-				f.WriteString(`<div class="content">` + "\n")
+				{ // content
+					f.WriteString(`<div class="content">` + "\n")
 
-				if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
-					fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
+					if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
+						fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
+					}
+
+					io.Copy(f, src)
+					f.WriteString(`</div>` + "\n")
 				}
-
-				io.Copy(f, src)
-				f.WriteString(`</div>` + "\n")
 
 				src.Close()
 
@@ -220,7 +227,9 @@ func getIndex(n *Node, lang, version string) string {
 
 		link := getLink(child, lang, version)
 
-		result += `<div class="item"><a href="` + link + `">` + child.Name + `</a></div>` + "\n"
+		variation := getBestVariation(child.Variations, lang, version)
+
+		result += `<div class="item"><a href="` + link + `">` + variation.Title + `</a></div>` + "\n"
 
 		if len(child.Children) == 0 {
 			continue
@@ -256,11 +265,12 @@ type Variation struct {
 	Language string
 	Version  string
 	Filename string
+	Title    string
 }
 
 func (n *Node) PrettyPrint(indent int) {
 	for _, child := range n.Children {
-		fmt.Println(strings.Repeat("    ", indent) + child.Name)
+		fmt.Printf("%s (%d)\n", strings.Repeat("    ", indent)+child.Name, len(child.Variations))
 		child.PrettyPrint(indent + 1)
 	}
 }
@@ -360,11 +370,34 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 			}
 			parts = parts[1:]
 
+			filename := path.Join(src, entry.Name())
+
+			f, err := os.Open(filename)
+
+			doc, err := html.Parse(f)
+			f.Close()
+			if err != nil {
+				panic(err.Error())
+			}
+
+			title := ""
+			traverseHtml(doc, func(node *html.Node) {
+				if node.Data == "h1" && node.FirstChild != nil {
+					title = node.FirstChild.Data
+				}
+			})
+			if title == "" {
+				title = friendlyUrl // fallback
+				base, _ := os.Getwd()
+				fmt.Printf("WARNING: 'file:///%s' needs a title <h1>\n", path.Join(base, filename))
+			}
+
 			root.Variations = append(root.Variations, &Variation{
 				Url:      friendlyUrl,
 				Language: lang,
 				Version:  version,
-				Filename: path.Join(src, entry.Name()),
+				Filename: filename,
+				Title:    title,
 			})
 
 		}
@@ -375,6 +408,16 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 		return root.Children[i].Order < root.Children[j].Order
 	})
 
+}
+
+func traverseHtml(n *html.Node, callback func(node *html.Node)) {
+	if n.Type == html.ElementNode {
+		callback(n)
+	}
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+
+		traverseHtml(c, callback)
+	}
 }
 
 func in[T cmp.Ordered](a []T, v T) bool {

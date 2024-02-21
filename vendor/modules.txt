@@ -1,3 +1,7 @@
 # github.com/fulldump/goconfig v1.6.1
 ## explicit; go 1.5
 github.com/fulldump/goconfig
+# golang.org/x/net v0.21.0
+## explicit; go 1.18
+golang.org/x/net/html
+golang.org/x/net/html/atom
