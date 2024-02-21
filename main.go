@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"fmt"
+	"io"
 	"os"
 	"path"
 	"sort"
@@ -54,48 +55,10 @@ func main() {
 		for _, version := range versions {
 			for _, language := range languages {
 
-				var variation *Variation
-				{ // choose best possible variation
-					for _, v := range node.Variations {
-						if v.Language == language && v.Version == version {
-							variation = v
-							break
-						}
-					}
-
-					// fallback by version
-					if variation == nil {
-						// todo: sort and filter by version (should be less or eq than "version")
-						for _, v := range node.Variations {
-							if v.Version == version {
-								variation = v
-								break
-							}
-						}
-					}
-
-					// fallback by language
-					if variation == nil {
-						for _, v := range node.Variations {
-							if v.Language == language {
-								variation = v
-								break
-							}
-						}
-					}
-
-					// fallback by any variation (version must be less or equal!)
-					if variation == nil {
-						for _, v := range node.Variations {
-							variation = v
-							break
-						}
-					}
-
-					if variation == nil {
-						fmt.Println("skip:", node.Path)
-						continue
-					}
+				variation := getBestVariation(node.Variations, language, version)
+				if variation == nil {
+					fmt.Println("skip:", node.Path)
+					continue
 				}
 
 				newFilename := path.Join(c.Www, version, language, getOutputPath(node, variation)+".html")
@@ -107,12 +70,71 @@ func main() {
 					panic(err.Error())
 				}
 
-				_, err = f.WriteString(
-					fmt.Sprintln(variation.Url, variation.Language, variation.Filename, variation.Version),
+				f.WriteString(
+					fmt.Sprintln(`<!--`, variation.Url, variation.Language, variation.Filename, variation.Version, `-->`),
 				)
+
+				fmt.Fprintln(f, `<div class="top">`)
+				fmt.Fprintln(f, `Languages:`)
+				for _, l := range languages {
+					fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
+				}
+				fmt.Fprintln(f, `<br>`)
+				fmt.Fprintln(f, `Versions:`)
+				for _, v := range versions {
+					fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
+				}
+				fmt.Fprintln(f, `</div>`)
+
+				fmt.Fprintln(f, `<style>
+.index {
+  float: left;
+}
+
+.children {
+  padding-left: 16px;
+}
+
+.content {
+  padding-left: 200px;
+}
+
+.alert {
+  color: dodgerblue;
+  background-color: ;
+  border: solid dodgerblue 1px;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.top {
+  border-bottom: solid silver 1px;
+  margin-bottom: 16px;
+}
+
+</style>`)
+
+				f.WriteString(`<div class="index">` + "\n")
+				index := getIndex(root, language, version)
+				f.WriteString(index)
+				f.WriteString(`</div>` + "\n")
+
+				// Process output (for now, just copy the source file)
+				src, err := os.Open(variation.Filename)
 				if err != nil {
 					panic(err.Error())
 				}
+
+				f.WriteString(`<div class="content">` + "\n")
+
+				if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
+					fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
+				}
+
+				io.Copy(f, src)
+				f.WriteString(`</div>` + "\n")
+
+				src.Close()
 
 				err = f.Close()
 				if err != nil {
@@ -124,6 +146,84 @@ func main() {
 
 	})
 
+}
+
+// return the best variation for a given language and version
+func getBestVariation(variations []*Variation, language, version string) *Variation {
+	var variation *Variation
+
+	// choose best possible variation
+
+	for _, v := range variations {
+		if v.Language == language && v.Version == version {
+			variation = v
+			break
+		}
+	}
+
+	// fallback by version
+	if variation == nil {
+		// todo: sort and filter by version (should be less or eq than "version")
+		for _, v := range variations {
+			if v.Version == version {
+				variation = v
+				break
+			}
+		}
+	}
+
+	// fallback by language
+	if variation == nil {
+		for _, v := range variations {
+			if v.Language == language {
+				variation = v
+				break
+			}
+		}
+	}
+
+	// fallback by any variation (version must be less or equal!)
+	if variation == nil {
+		for _, v := range variations {
+			variation = v
+			break
+		}
+	}
+
+	return variation
+}
+
+var basepath = "/holadoc/www"
+
+func getLink(n *Node, lang, version string) string {
+	variation := getBestVariation(n.Variations, lang, version)
+	return path.Join(basepath, version, lang, getOutputPath(n, variation)+".html")
+}
+
+func getIndex(n *Node, lang, version string) string {
+
+	result := ""
+
+	for _, child := range n.Children {
+
+		// variation := getBestVariation(child.Variations, lang, version)
+		// link := path.Join(basepath, version, lang, getOutputPath(child, variation)+".html")
+		//
+
+		link := getLink(child, lang, version)
+
+		result += `<div class="item"><a href="` + link + `">` + child.Name + `</a></div>` + "\n"
+
+		if len(child.Children) == 0 {
+			continue
+		}
+
+		result += `<div class="children">` + "\n"
+		result += getIndex(child, lang, version)
+		result += `</div>` + "\n"
+	}
+
+	return result
 }
 
 func traverseNodes(root *Node, callback func(*Node)) {
@@ -158,6 +258,10 @@ func (n *Node) PrettyPrint(indent int) {
 }
 
 func getOutputPath(node *Node, variation *Variation) string {
+
+	if variation == nil {
+		return "NIL VARIATION!!! panic(?)"
+	}
 
 	result := []string{
 		variation.Url,
