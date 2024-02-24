@@ -9,5 +9,5 @@ run:
 
 .PHONY: serve
 serve:
-	SERVE=127.0.0.1:8080 go run main.go
+	SERVE=:8080 go run main.go
 

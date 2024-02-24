@@ -3,8 +3,8 @@ package main
 import (
 	"cmp"
 	"fmt"
-	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 	"sort"
@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 
 	"github.com/fulldump/goconfig"
 )
@@ -110,8 +111,62 @@ func main() {
   padding-left: 16px;
 }
 
+.index {
+  float: right;
+  position: sticky;
+  top: 0;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.index a {
+  display: block;
+  text-decoration: none;
+  color: gray;
+  padding: 4px 8px;
+}
+
+.index .index-h2 a {
+  padding-left: 16px;
+}
+
+.index .index-h3 a {
+  padding-left: 32px;
+}
+
+.index .index-h4 a {
+  padding-left: 48px;
+}
+
+.index .index-h5 a {
+  padding-left: 64px;
+}
+
+.index .index-h6 {
+  padding-left: 80px;
+}
+
+.index a {
+  border-left: solid silver 1px;
+}
+
+.index a.active {
+  border-left: solid black 3px;
+  margin-left: -1px;
+  color: black;
+  font-weight: bold;
+}
+
+.index a:hover {
+  zborder-left: solid black 3px;
+  zmargin-left: -1px;
+  color: black;
+  text-decoration: underline;
+}
+
 .content {
   padding-left: 200px;
+  min-height: 100vh;
 }
 
 .content .alert {
@@ -127,6 +182,18 @@ func main() {
   margin-bottom: 16px;
 }
 
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 32px;
+  text-align: center;
+  min-height: 500px;
+}
+
+.home-desc {
+  display: none;
+}
+
 </style>`)
 
 				{ // tree
@@ -137,10 +204,6 @@ func main() {
 				}
 
 				// Process output (for now, just copy the source file)
-				src, err := os.Open(variation.Filename)
-				if err != nil {
-					panic(err.Error())
-				}
 
 				{ // content
 					f.WriteString(`<div class="content">` + "\n")
@@ -149,12 +212,116 @@ func main() {
 						fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
 					}
 
-					io.Copy(f, src)
+					src, err := os.Open(variation.Filename)
+					if err != nil {
+						panic(err.Error())
+					}
+					doc := &html.Node{
+						Type:     html.ElementNode,
+						Data:     "body",
+						DataAtom: atom.Body,
+					}
+					nodes, err := html.ParseFragment(src, doc)
+					if err != nil {
+						panic(err.Error())
+					}
+
+					{ // print index
+						f.WriteString(`<div class="index">` + "\n")
+						f.WriteString(`On this page:` + "\n")
+
+						for _, n := range nodes {
+							traverseHtml(n, func(node *html.Node) {
+								tag := strings.ToLower(node.Data)
+								if in([]string{"h2", "h3", "h4", "h5", "h6"}, tag) && node.FirstChild != nil {
+									title := node.FirstChild.Data
+									node.Attr = append(node.Attr, html.Attribute{
+										Key: "id",
+										Val: url.PathEscape(title), // todo: slug?
+									})
+									f.WriteString(`<div class="index-` + node.Data + `">` + "\n")
+									f.WriteString(`<a href="#` + url.PathEscape(title) + `">` + title + `</a>` + "\n")
+									f.WriteString(`</div>` + "\n")
+								}
+							})
+						}
+
+						f.WriteString(`</div>` + "\n")
+					}
+
+					{ // print content
+						for _, n := range nodes {
+							html.Render(f, n)
+						}
+						// src, err := os.Open(variation.Filename)
+						// if err != nil {
+						// 	panic(err.Error())
+						// }
+						// io.Copy(f, src)
+						// src.Close()
+					}
+
+					fmt.Fprintln(f, `<!-- begin wwww.htmlcommentbox.com -->
+ <div id="HCB_comment_box" style="height: auto;"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
+ <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
+ <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24zriY6QFS8E0rsWG5aZV1n."+"&opts=16798&num=10&ts=1708504120915");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
+<!-- end www.htmlcommentbox.com -->`)
+
 					f.WriteString(`</div>` + "\n")
 				}
 
-				src.Close()
+				{ // footer
+					f.WriteString(`<div class="footer">` + "\n")
+					f.WriteString(`HolaDoc` + "\n")
+					f.WriteString(`</div>` + "\n")
+				}
 
+				fmt.Fprintln(f, `<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>`)
 				err = f.Close()
 				if err != nil {
 					panic(err.Error())
