@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<title>Índices</title>
+</head>
+<body>
 <!-- indices es src/3_indexes/indices_es_v1.html v1 -->
 <div class="top">
 Languages:
@@ -96,6 +102,24 @@ Versions:
   border-radius: 4px;
 }
 
+.breadcrumb .arrow {
+  color: silver;
+}
+
+.breadcrumb .item {
+  color: gray;
+  text-decoration: none;
+}
+
+.breadcrumb .item:hover {
+  color: black;
+  text-decoration: underline 1px silver;
+}
+
+.breadcrumb .item.selected {
+  color: black;
+}
+
 .top {
   border-bottom: solid silver 1px;
   margin-bottom: 16px;
@@ -125,22 +149,14 @@ Versions:
 <div class="item"><a href="/v1/es/indices/creating-indexes.html">Creating indexes</a></div>
 <div class="item"><a href="/v1/es/indices/tipos-de-indices.html">Tipos de índices</a></div>
 <div class="children">
-<div class="item"><a href="/v1/es/indices/tipos-de-indices/map.html">map</a></div>
+<div class="item"><a href="/v1/es/indices/tipos-de-indices/map.html">Map</a></div>
 <div class="item"><a href="/v1/es/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
 </div>
 </div>
 <div class="item"><a href="/v1/es/last-entry.html">This is the last entry</a></div>
 </div>
 <div class="content">
-<div class="index">
-On this page:
-</div>
-<h1>Índices</h1><!-- begin wwww.htmlcommentbox.com -->
- <div id="HCB_comment_box" style="height: auto;"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
- <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
- <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24zriY6QFS8E0rsWG5aZV1n."+"&opts=16798&num=10&ts=1708504120915");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-<!-- end www.htmlcommentbox.com -->
-</div>
+<div class="breadcrumb"><a class="item selected" href="/v1/es/indices.html">Índices</a></div><h1>Índices</h1></div>
 <div class="footer">
 HolaDoc
 </div>
@@ -190,3 +206,5 @@ function highlightIndex() {
 document.addEventListener('scroll', highlightIndex, true);
 document.addEventListener('load', highlightIndex, true);
 </script>
+</body>
+</html>

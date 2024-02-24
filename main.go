@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -35,7 +36,7 @@ func main() {
 		Src:       "src/",
 		Www:       "www/",
 		Versions:  "v2,v1",
-		Languages: "en,es",
+		Languages: "en,es,zh",
 	}
 	goconfig.Read(&c)
 
@@ -83,6 +84,13 @@ func main() {
 				if err != nil {
 					panic(err.Error())
 				}
+
+				f.WriteString(`<!DOCTYPE html>` + "\n")
+				f.WriteString(`<html lang="` + variation.Language + `">` + "\n")
+				f.WriteString(`<head>` + "\n")
+				f.WriteString(`<title>` + variation.Title + `</title>` + "\n")
+				f.WriteString(`</head>` + "\n")
+				f.WriteString(`<body>` + "\n")
 
 				f.WriteString(
 					fmt.Sprintln(`<!--`, variation.Url, variation.Language, variation.Filename, variation.Version, `-->`),
@@ -189,6 +197,24 @@ func main() {
   border-radius: 4px;
 }
 
+.breadcrumb .arrow {
+  color: silver;
+}
+
+.breadcrumb .item {
+  color: gray;
+  text-decoration: none;
+}
+
+.breadcrumb .item:hover {
+  color: black;
+  text-decoration: underline 1px silver;
+}
+
+.breadcrumb .item.selected {
+  color: black;
+}
+
 .top {
   border-bottom: solid silver 1px;
   margin-bottom: 16px;
@@ -215,10 +241,11 @@ func main() {
 					f.WriteString(`</div>` + "\n")
 				}
 
-				// Process output (for now, just copy the source file)
-
 				{ // content
 					f.WriteString(`<div class="content">` + "\n")
+
+					breadcrumb := getBreadcrumb(node, language, version)
+					f.WriteString(breadcrumb)
 
 					if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
 						fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
@@ -239,8 +266,8 @@ func main() {
 					}
 
 					{ // print index
-						f.WriteString(`<div class="index">` + "\n")
-						f.WriteString(`On this page:` + "\n")
+
+						onThisPage := ""
 
 						for _, n := range nodes {
 							traverseHtml(n, func(node *html.Node) {
@@ -251,33 +278,32 @@ func main() {
 										Key: "id",
 										Val: url.PathEscape(title), // todo: slug?
 									})
-									f.WriteString(`<div class="index-` + node.Data + `">` + "\n")
-									f.WriteString(`<a href="#` + url.PathEscape(title) + `">` + title + `</a>` + "\n")
-									f.WriteString(`</div>` + "\n")
+									onThisPage += `<div class="index-` + node.Data + `">` + "\n"
+									onThisPage += `<a href="#` + url.PathEscape(title) + `">` + title + `</a>` + "\n"
+									onThisPage += `</div>` + "\n"
 								}
 							})
 						}
 
-						f.WriteString(`</div>` + "\n")
+						if onThisPage != "" {
+							f.WriteString(`<div class="index">` + "\n")
+							f.WriteString(`On this page:` + "\n")
+							f.WriteString(onThisPage)
+							f.WriteString(`</div>` + "\n")
+						}
 					}
 
 					{ // print content
 						for _, n := range nodes {
 							html.Render(f, n)
 						}
-						// src, err := os.Open(variation.Filename)
-						// if err != nil {
-						// 	panic(err.Error())
-						// }
-						// io.Copy(f, src)
-						// src.Close()
 					}
 
-					fmt.Fprintln(f, `<!-- begin wwww.htmlcommentbox.com -->
- <div id="HCB_comment_box" style="height: auto;"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
- <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
- <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24zriY6QFS8E0rsWG5aZV1n."+"&opts=16798&num=10&ts=1708504120915");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-<!-- end www.htmlcommentbox.com -->`)
+					// 					fmt.Fprintln(f, `<!-- begin wwww.htmlcommentbox.com -->
+					//  <div id="HCB_comment_box" style="height: auto;"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
+					//  <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
+					//  <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24zriY6QFS8E0rsWG5aZV1n."+"&opts=16798&num=10&ts=1708504120915");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
+					// <!-- end www.htmlcommentbox.com -->`)
 
 					f.WriteString(`</div>` + "\n")
 				}
@@ -334,6 +360,10 @@ function highlightIndex() {
 document.addEventListener('scroll', highlightIndex, true);
 document.addEventListener('load', highlightIndex, true);
 </script>`)
+
+				f.WriteString(`</body>` + "\n")
+				f.WriteString(`</html>` + "\n")
+
 				err = f.Close()
 				if err != nil {
 					panic(err.Error())
@@ -396,6 +426,35 @@ var basepath = "/"
 func getLink(n *Node, lang, version string) string {
 	variation := getBestVariation(n.Variations, lang, version)
 	return path.Join(basepath, version, lang, getOutputPath(n, variation)+".html")
+}
+
+func getBreadcrumb(n *Node, lang, version string) string {
+	breadcrumb := []*Node{}
+
+	for n != nil && len(n.Variations) > 0 {
+		breadcrumb = append(breadcrumb, n)
+		n = n.Parent
+	}
+
+	slices.Reverse(breadcrumb)
+
+	result := ""
+
+	result += `<div class="breadcrumb">`
+	for i, node := range breadcrumb {
+		if i > 0 {
+			result += `<span class="arrow">→</span>`
+		}
+		v := getBestVariation(node.Variations, lang, version)
+		class := "item"
+		if i == len(breadcrumb)-1 {
+			class += " selected"
+		}
+		result += `<a class="` + class + `" href="` + getLink(node, lang, version) + `">` + v.Title + `</a>`
+	}
+	result += `</div>`
+
+	return result
 }
 
 func getIndex(root, target *Node, lang, version string) string {
@@ -583,7 +642,7 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 			if title == "" {
 				title = friendlyUrl // fallback
 				base, _ := os.Getwd()
-				fmt.Printf("WARNING: 'file:///%s' needs a title <h1>\n", path.Join(base, filename))
+				fmt.Printf("WARNING: %s:1 needs a title <h1>\n", path.Join(base, filename))
 			}
 
 			root.Variations = append(root.Variations, &Variation{

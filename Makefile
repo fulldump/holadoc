@@ -5,7 +5,7 @@ build:
 
 .PHONY: run
 run:
-	LANGUAGES=en,es,zh go run main.go
+	go run main.go
 
 .PHONY: serve
 serve:
