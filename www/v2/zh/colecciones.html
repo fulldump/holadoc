@@ -18,6 +18,18 @@ Versions:
   padding-left: 16px;
 }
 
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.tree .item.selected {
+	font-weight: bold;
+}
+
 .index {
   float: right;
   position: sticky;
@@ -104,7 +116,7 @@ Versions:
 </style>
 <div class="tree">
 <div class="item"><a href="/v2/zh/getting-started.html">Getting started</a></div>
-<div class="item"><a href="/v2/zh/colecciones.html">Colecciones</a></div>
+<div class="item active selected"><a href="/v2/zh/colecciones.html">Colecciones</a></div>
 <div class="children">
 <div class="item"><a href="/v2/zh/collections/creating-collections.html">Creating collections</a></div>
 </div>

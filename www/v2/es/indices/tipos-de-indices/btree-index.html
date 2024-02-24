@@ -18,6 +18,18 @@ Versions:
   padding-left: 16px;
 }
 
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.tree .item.selected {
+	font-weight: bold;
+}
+
 .index {
   float: right;
   position: sticky;
@@ -108,13 +120,13 @@ Versions:
 <div class="children">
 <div class="item"><a href="/v2/es/collections/creating-collections.html">Creating collections</a></div>
 </div>
-<div class="item"><a href="/v2/es/indices.html">Índices</a></div>
+<div class="item active"><a href="/v2/es/indices.html">Índices</a></div>
 <div class="children">
 <div class="item"><a href="/v2/es/indices/creating-indexes.html">Creating indexes</a></div>
-<div class="item"><a href="/v2/es/indices/tipos-de-indices.html">Tipos de índices</a></div>
+<div class="item active"><a href="/v2/es/indices/tipos-de-indices.html">Tipos de índices</a></div>
 <div class="children">
 <div class="item"><a href="/v2/es/indices/tipos-de-indices/map.html">map</a></div>
-<div class="item"><a href="/v2/es/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
+<div class="item active selected"><a href="/v2/es/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
 </div>
 </div>
 <div class="item"><a href="/v2/es/last-entry.html">This is the last entry</a></div>

@@ -111,6 +111,18 @@ func main() {
   padding-left: 16px;
 }
 
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.tree .item.selected {
+	font-weight: bold;
+}
+
 .index {
   float: right;
   position: sticky;
@@ -198,7 +210,7 @@ func main() {
 
 				{ // tree
 					f.WriteString(`<div class="tree">` + "\n")
-					index := getIndex(root, language, version)
+					index := getIndex(root, node, language, version)
 					f.WriteString(index)
 					f.WriteString(`</div>` + "\n")
 				}
@@ -386,24 +398,39 @@ func getLink(n *Node, lang, version string) string {
 	return path.Join(basepath, version, lang, getOutputPath(n, variation)+".html")
 }
 
-func getIndex(n *Node, lang, version string) string {
+func getIndex(root, target *Node, lang, version string) string {
+
+	nodesToParent := []*Node{}
+	n := target
+	for n != nil {
+		nodesToParent = append(nodesToParent, n)
+		n = n.Parent
+	}
 
 	result := ""
 
-	for _, child := range n.Children {
+	for _, child := range root.Children {
 
 		link := getLink(child, lang, version)
 
 		variation := getBestVariation(child.Variations, lang, version)
 
-		result += `<div class="item"><a href="` + link + `">` + variation.Title + `</a></div>` + "\n"
+		class := "item"
+		if nodeIn(nodesToParent, child) {
+			class += " active"
+		}
+		if child == target {
+			class += " selected"
+		}
+
+		result += `<div class="` + class + `"><a href="` + link + `">` + variation.Title + `</a></div>` + "\n"
 
 		if len(child.Children) == 0 {
 			continue
 		}
 
 		result += `<div class="children">` + "\n"
-		result += getIndex(child, lang, version)
+		result += getIndex(child, target, lang, version)
 		result += `</div>` + "\n"
 	}
 
@@ -588,6 +615,15 @@ func traverseHtml(n *html.Node, callback func(node *html.Node)) {
 }
 
 func in[T cmp.Ordered](a []T, v T) bool {
+	for _, i := range a {
+		if i == v {
+			return true
+		}
+	}
+	return false
+}
+
+func nodeIn(a []*Node, v *Node) bool {
 	for _, i := range a {
 		if i == v {
 			return true

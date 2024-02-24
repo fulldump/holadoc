@@ -18,6 +18,18 @@ Versions:
   padding-left: 16px;
 }
 
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.tree .item.selected {
+	font-weight: bold;
+}
+
 .index {
   float: right;
   position: sticky;
@@ -117,7 +129,7 @@ Versions:
 <div class="item"><a href="/v1/en/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
 </div>
 </div>
-<div class="item"><a href="/v1/en/last-entry.html">This is the last entry</a></div>
+<div class="item active selected"><a href="/v1/en/last-entry.html">This is the last entry</a></div>
 </div>
 <div class="content">
 <div class="index">

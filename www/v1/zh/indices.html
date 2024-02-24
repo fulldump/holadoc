@@ -18,6 +18,18 @@ Versions:
   padding-left: 16px;
 }
 
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.tree .item.selected {
+	font-weight: bold;
+}
+
 .index {
   float: right;
   position: sticky;
@@ -108,7 +120,7 @@ Versions:
 <div class="children">
 <div class="item"><a href="/v1/zh/collections/creating-collections.html">创建集合</a></div>
 </div>
-<div class="item"><a href="/v1/zh/indices.html">Índices</a></div>
+<div class="item active selected"><a href="/v1/zh/indices.html">Índices</a></div>
 <div class="children">
 <div class="item"><a href="/v1/zh/indices/creating-indexes.html">Creating indexes</a></div>
 <div class="item"><a href="/v1/zh/indices/tipos-de-indices.html">Tipos de índices</a></div>
