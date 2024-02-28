@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<title>集合</title>
+</head>
+<body>
+<!-- collections zh src/1_index/30_docs/2_collections/collections_zh.html  -->
+<div class="top">
+Languages:
+<a href="/v2/index/docs/collections.html">en</a>
+<a href="/es/v2/index/docs/colecciones.html">es</a>
+<a href="/zh/v2/index/docs/collections.html">zh</a>
+<br>
+Versions:
+<a href="/zh/v2/index/docs/collections.html">v2</a>
+<a href="/zh/v1/index/docs/collections.html">v1</a>
+</div>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.tree {
+  float: left;
+  width: 280px;
+}
+
+.tree .item {
+}
+
+.tree .item a {
+  display: block;
+  border-left: solid transparent 4px;
+  padding: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.tree .item.selected a {
+  color: black;
+  border-color: #1ba361;
+  font-weight: bold;
+  background-color: rgb(227, 252, 247);
+}
+
+.tree .item a:hover {
+  background-color: #e8edeb;
+}
+
+.tree > .item a {
+  padding-left: 16px;
+}
+
+.tree .children .item a {
+  padding-left: 32px;
+}
+
+.tree .children .children .item a {
+  padding-left: 48px;
+}
+
+.tree .children .children .children .item a {
+  padding-left: 64px;
+}
+
+.tree .children {
+  /*padding-left: 16px;*/
+}
+
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.index {
+  float: right;
+  position: sticky;
+  top: 0;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.index a {
+  display: block;
+  text-decoration: none;
+  color: gray;
+  padding: 4px 8px;
+}
+
+.index .index-h2 a {
+  padding-left: 16px;
+}
+
+.index .index-h3 a {
+  padding-left: 32px;
+}
+
+.index .index-h4 a {
+  padding-left: 48px;
+}
+
+.index .index-h5 a {
+  padding-left: 64px;
+}
+
+.index .index-h6 {
+  padding-left: 80px;
+}
+
+.index a {
+  border-left: solid silver 1px;
+}
+
+.index a.active {
+  border-left: solid black 3px;
+  margin-left: -1px;
+  color: black;
+  font-weight: bold;
+}
+
+.index a:hover {
+  zborder-left: solid black 3px;
+  zmargin-left: -1px;
+  color: black;
+  text-decoration: underline;
+}
+
+.content {
+  padding-left: 300px;
+  min-height: 80vh;
+}
+
+.content .alert {
+  color: dodgerblue;
+  background-color: ;
+  border: solid dodgerblue 1px;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.breadcrumb .arrow {
+  color: silver;
+}
+
+.breadcrumb .item {
+  color: gray;
+  text-decoration: none;
+}
+
+.breadcrumb .item:hover {
+  color: black;
+  text-decoration: underline 1px silver;
+}
+
+.breadcrumb .item.selected {
+  color: black;
+}
+
+.top {
+  border-bottom: solid silver 1px;
+  margin-bottom: 16px;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 32px;
+  text-align: center;
+  min-height: 500px;
+}
+
+.home-desc {
+  display: none;
+}
+
+</style>
+<div class="tree">
+<div class="item active"><a href="/zh/v2/index.html">Inicio</a></div>
+<div class="children">
+<div class="item"><a href="/zh/v2/index/products.html">Products</a></div>
+<div class="item"><a href="/zh/v2/index/pricing.html">Pricing</a></div>
+<div class="item active"><a href="/zh/v2/index/docs.html">Documentación</a></div>
+<div class="children">
+<div class="item"><a href="/zh/v2/index/docs/getting-started.html">Getting started</a></div>
+<div class="item active selected"><a href="/zh/v2/index/docs/collections.html">集合</a></div>
+<div class="children">
+<div class="item"><a href="/zh/v2/index/docs/collections/creating-collections.html">Creating collections</a></div>
+</div>
+<div class="item"><a href="/zh/v2/index/docs/indices.html">Índices</a></div>
+<div class="children">
+<div class="item"><a href="/zh/v2/index/docs/indices/creating-indexes.html">Creating indexes</a></div>
+<div class="item"><a href="/zh/v2/index/docs/indices/tipos-de-indices.html">Tipos de índices</a></div>
+<div class="children">
+<div class="item"><a href="/zh/v2/index/docs/indices/tipos-de-indices/map.html">Map</a></div>
+<div class="item"><a href="/zh/v2/index/docs/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
+</div>
+</div>
+<div class="item"><a href="/zh/v2/index/docs/last-entry.html">This is the last entry</a></div>
+</div>
+<div class="item"><a href="/zh/v2/index/blog.html">Blog</a></div>
+</div>
+</div>
+<div class="content">
+<div class="breadcrumb"><a class="item" href="/zh/v2/index.html">Inicio</a><span class="arrow">→</span><a class="item" href="/zh/v2/index/docs.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/zh/v2/index/docs/collections.html">集合</a></div><h1>集合</h1>
+<p>InceptionDB 的集合是一个容器，它包含了一组文档。集合类似于关系数据库中的表，但更加灵活，因为一个集合内的文档可以有不同的字段或结构。这种灵活性是因为 InceptionDB 是一种 NoSQL 数据库，通常允许无模式的数据存储。</p>
+<p>集合中的每个文档都由一个唯一标识符标识，您可以对这些文档执行各种操作，如插入、查询、更新和删除。集合被设计为高度可扩展的，并支持快速数据检索和操作，使其适合处理从简单的键值对到复杂的嵌套对象等广泛的数据类型和结构。</p>
+<p>在 InceptionDB 的上下文中，集合还可能支持高级功能，如索引以实现高效查询、事务以确保数据完整性，以及访问控制机制以保护数据访问。集合是使用 InceptionDB 工作的基础部分，因为它们组织和管理您在数据库中存储的数据。</p>
+</div>
+<div class="footer">
+HolaDoc
+</div>
+<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>
