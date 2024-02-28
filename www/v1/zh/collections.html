@@ -1,27 +1,72 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="zh">
 <head>
-<title>Colecciones</title>
+<title>集合</title>
 </head>
 <body>
-<!-- colecciones es src/2_collections/colecciones_es.html  -->
+<!-- collections zh src/2_collections/collections_zh.html  -->
 <div class="top">
 Languages:
 <a href="/v1/en/collections.html">en</a>
 <a href="/v1/es/colecciones.html">es</a>
-<a href="/v1/zh/colecciones.html">zh</a>
+<a href="/v1/zh/collections.html">zh</a>
 <br>
 Versions:
-<a href="/v2/zh/colecciones.html">v2</a>
-<a href="/v1/zh/colecciones.html">v1</a>
+<a href="/v2/zh/collections.html">v2</a>
+<a href="/v1/zh/collections.html">v1</a>
 </div>
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
 .tree {
   float: left;
+  width: 280px;
+}
+
+.tree .item {
+}
+
+.tree .item a {
+  display: block;
+  border-left: solid transparent 4px;
+  padding: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.tree .item.selected a {
+  color: black;
+  border-color: #1ba361;
+  font-weight: bold;
+  background-color: rgb(227, 252, 247);
+}
+
+.tree .item a:hover {
+  background-color: #e8edeb;
+}
+
+.tree > .item a {
+  padding-left: 16px;
+}
+
+.tree .children .item a {
+  padding-left: 32px;
+}
+
+.tree .children .children .item a {
+  padding-left: 48px;
+}
+
+.tree .children .children .children .item a {
+  padding-left: 64px;
 }
 
 .tree .children {
-  padding-left: 16px;
+  /*padding-left: 16px;*/
 }
 
 .tree .children {
@@ -30,10 +75,6 @@ Versions:
 
 .tree .item.active + .children {
     display: block;
-}
-
-.tree .item.selected {
-	font-weight: bold;
 }
 
 .index {
@@ -90,8 +131,8 @@ Versions:
 }
 
 .content {
-  padding-left: 200px;
-  min-height: 100vh;
+  padding-left: 300px;
+  min-height: 80vh;
 }
 
 .content .alert {
@@ -140,7 +181,7 @@ Versions:
 </style>
 <div class="tree">
 <div class="item"><a href="/v1/zh/getting-started.html">Getting started</a></div>
-<div class="item active selected"><a href="/v1/zh/colecciones.html">Colecciones</a></div>
+<div class="item active selected"><a href="/v1/zh/collections.html">集合</a></div>
 <div class="children">
 <div class="item"><a href="/v1/zh/collections/creating-collections.html">创建集合</a></div>
 </div>
@@ -156,8 +197,10 @@ Versions:
 <div class="item"><a href="/v1/zh/last-entry.html">This is the last entry</a></div>
 </div>
 <div class="content">
-<div class="breadcrumb"><a class="item selected" href="/v1/zh/colecciones.html">Colecciones</a></div><h1>Colecciones</h1>
-
+<div class="breadcrumb"><a class="item selected" href="/v1/zh/collections.html">集合</a></div><h1>集合</h1>
+<p>InceptionDB 的集合是一个容器，它包含了一组文档。集合类似于关系数据库中的表，但更加灵活，因为一个集合内的文档可以有不同的字段或结构。这种灵活性是因为 InceptionDB 是一种 NoSQL 数据库，通常允许无模式的数据存储。</p>
+<p>集合中的每个文档都由一个唯一标识符标识，您可以对这些文档执行各种操作，如插入、查询、更新和删除。集合被设计为高度可扩展的，并支持快速数据检索和操作，使其适合处理从简单的键值对到复杂的嵌套对象等广泛的数据类型和结构。</p>
+<p>在 InceptionDB 的上下文中，集合还可能支持高级功能，如索引以实现高效查询、事务以确保数据完整性，以及访问控制机制以保护数据访问。集合是使用 InceptionDB 工作的基础部分，因为它们组织和管理您在数据库中存储的数据。</p>
 </div>
 <div class="footer">
 HolaDoc

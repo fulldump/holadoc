@@ -111,12 +111,57 @@ func main() {
 				}
 
 				fmt.Fprintln(f, `<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
 .tree {
   float: left;
+  width: 280px;
+}
+
+.tree .item {
+}
+
+.tree .item a {
+  display: block;
+  border-left: solid transparent 4px;
+  padding: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.tree .item.selected a {
+  color: black;
+  border-color: #1ba361;
+  font-weight: bold;
+  background-color: rgb(227, 252, 247);
+}
+
+.tree .item a:hover {
+  background-color: #e8edeb;
+}
+
+.tree > .item a {
+  padding-left: 16px;
+}
+
+.tree .children .item a {
+  padding-left: 32px;
+}
+
+.tree .children .children .item a {
+  padding-left: 48px;
+}
+
+.tree .children .children .children .item a {
+  padding-left: 64px;
 }
 
 .tree .children {
-  padding-left: 16px;
+  /*padding-left: 16px;*/
 }
 
 .tree .children {
@@ -125,10 +170,6 @@ func main() {
 
 .tree .item.active + .children {
     display: block;
-}
-
-.tree .item.selected {
-	font-weight: bold;
 }
 
 .index {
@@ -185,8 +226,8 @@ func main() {
 }
 
 .content {
-  padding-left: 200px;
-  min-height: 100vh;
+  padding-left: 300px;
+  min-height: 80vh;
 }
 
 .content .alert {
