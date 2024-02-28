@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -48,15 +49,8 @@ func main() {
 		}
 
 		s.ListenAndServe()
+		return
 	}
-
-	versions = strings.Split(c.Versions, ",")
-	languages = strings.Split(c.Languages, ",")
-
-	root := &Node{}
-
-	readNodes(root, c.Src)
-	root.PrettyPrint(0)
 
 	// clear output
 	_ = os.RemoveAll(c.Www)
@@ -64,6 +58,14 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
+	versions = strings.Split(c.Versions, ",")
+	languages = strings.Split(c.Languages, ",")
+
+	root := &Node{}
+
+	readNodes(root, c.Src, c.Www)
+	root.PrettyPrint(0)
 
 	traverseNodes(root, func(node *Node) {
 
@@ -89,6 +91,7 @@ func main() {
 				f.WriteString(`<html lang="` + variation.Language + `">` + "\n")
 				f.WriteString(`<head>` + "\n")
 				f.WriteString(`<title>` + variation.Title + `</title>` + "\n")
+				f.WriteString(`<link href="/css/style.css" rel="stylesheet">` + "\n")
 				f.WriteString(`</head>` + "\n")
 				f.WriteString(`<body>` + "\n")
 
@@ -113,187 +116,6 @@ func main() {
 
 					fmt.Fprintln(f, `</div>`)
 				}
-
-				fmt.Fprintln(f, `<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-
-.tree {
-  float: left;
-  width: 280px;
-}
-
-.tree .item {
-}
-
-.tree .item a {
-  display: block;
-  border-left: solid transparent 4px;
-  padding: 8px;
-  text-decoration: none;
-  color: #333;
-}
-
-.tree .item.selected a {
-  color: black;
-  border-color: #1ba361;
-  font-weight: bold;
-  background-color: rgb(227, 252, 247);
-}
-
-.tree .item a:hover {
-  background-color: #e8edeb;
-}
-
-.tree > .item a {
-  padding-left: 16px;
-}
-
-.tree .children .item a {
-  padding-left: 32px;
-}
-
-.tree .children .children .item a {
-  padding-left: 48px;
-}
-
-.tree .children .children .children .item a {
-  padding-left: 64px;
-}
-
-.tree .children .children .children .children .item a {
-  padding-left: 80px;
-}
-
-.tree .children .children .children .children .children .item a {
-  padding-left: 96px;
-}
-
-.tree .children .children .children .children .children .children .item a {
-  padding-left: 112px;
-}
-
-.tree .children .children .children .children .children .children .children .item a {
-  padding-left: 128px;
-}
-
-.tree .children {
-  /*padding-left: 16px;*/
-}
-
-.tree .children {
-    display: none;
-}
-
-.tree .item.active + .children {
-    display: block;
-}
-
-.index {
-  float: right;
-  position: sticky;
-  top: 0;
-  padding-top: 16px;
-  margin-top: 16px;
-}
-
-.index a {
-  display: block;
-  text-decoration: none;
-  color: gray;
-  padding: 4px 8px;
-}
-
-.index .index-h2 a {
-  padding-left: 16px;
-}
-
-.index .index-h3 a {
-  padding-left: 32px;
-}
-
-.index .index-h4 a {
-  padding-left: 48px;
-}
-
-.index .index-h5 a {
-  padding-left: 64px;
-}
-
-.index .index-h6 {
-  padding-left: 80px;
-}
-
-.index a {
-  border-left: solid silver 1px;
-}
-
-.index a.active {
-  border-left: solid black 3px;
-  margin-left: -1px;
-  color: black;
-  font-weight: bold;
-}
-
-.index a:hover {
-  zborder-left: solid black 3px;
-  zmargin-left: -1px;
-  color: black;
-  text-decoration: underline;
-}
-
-.content {
-  padding-left: 300px;
-  min-height: 80vh;
-}
-
-.content .alert {
-  color: dodgerblue;
-  background-color: ;
-  border: solid dodgerblue 1px;
-  padding: 16px;
-  border-radius: 4px;
-}
-
-.breadcrumb .arrow {
-  color: silver;
-}
-
-.breadcrumb .item {
-  color: gray;
-  text-decoration: none;
-}
-
-.breadcrumb .item:hover {
-  color: black;
-  text-decoration: underline 1px silver;
-}
-
-.breadcrumb .item.selected {
-  color: black;
-}
-
-.top {
-  border-bottom: solid silver 1px;
-  margin-bottom: 16px;
-}
-
-.footer {
-  background-color: #333;
-  color: white;
-  padding: 32px;
-  text-align: center;
-  min-height: 500px;
-}
-
-.home-desc {
-  display: none;
-}
-
-</style>`)
 
 				{ // tree
 					f.WriteString(`<div class="tree">` + "\n")
@@ -666,7 +488,46 @@ func getOutputPath(node *Node, variation *Variation, lang, version string) strin
 	return path.Join(result...) + ".html"
 }
 
-func readNodes(root *Node, src string) { // todo: return errors instead of miserably panic
+func copyFile(src, dst string) {
+	info, err := os.Stat(src)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	if info.IsDir() {
+		err = os.MkdirAll(dst, 0777)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		entries, err := os.ReadDir(src)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		for _, entry := range entries {
+			copyFile(path.Join(src, entry.Name()), path.Join(dst, entry.Name()))
+		}
+		return
+	}
+
+	d, err := os.Create(dst)
+	if err != nil {
+		panic(err.Error())
+	}
+	s, err := os.Open(src)
+	if err != nil {
+		panic(err.Error())
+	}
+	_, err = io.Copy(d, s)
+	if err != nil {
+		panic(err.Error())
+	}
+	d.Close()
+	s.Close()
+}
+
+func readNodes(root *Node, src, www string) { // todo: return errors instead of miserably panic
 	entries, err := os.ReadDir(src)
 	if err != nil {
 		panic(err.Error())
@@ -681,6 +542,7 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 			} else {
 				parts := strings.Split(entry.Name(), "_")
 				if len(parts) != 2 {
+					copyFile(path.Join(src, entry.Name()), path.Join(www, entry.Name()))
 					continue
 				}
 				order, err = strconv.Atoi(parts[0])
@@ -695,13 +557,14 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 				Name:  name,
 				Path:  src,
 			}
-			readNodes(newNode, path.Join(src, entry.Name()))
+			readNodes(newNode, path.Join(src, entry.Name()), www)
 
 			newNode.Parent = root
 			root.Children = append(root.Children, newNode)
 
 		} else {
 			if strings.ToLower(path.Ext(entry.Name())) != ".html" {
+				fmt.Println("copy", entry.Name(), src)
 				continue
 			}
 
