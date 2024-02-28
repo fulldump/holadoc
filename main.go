@@ -105,10 +105,16 @@ func main() {
 
 				{ // top bar
 					fmt.Fprintln(f, `<div class="top">`)
-					fmt.Fprintln(f, `Languages:`)
+					fmt.Fprintln(f, `<a href="/" class="logo"></a>`)
+					fmt.Fprintln(f, `<div class="languages">`)
 					for _, l := range languages {
-						fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
+						class := ""
+						if l == language {
+							class += "selected"
+						}
+						fmt.Fprintln(f, `<a class="`+class+`" href="`+getLink(node, l, version)+`">`+l+`</a>`)
 					}
+					fmt.Fprintln(f, `</div>`)
 					fmt.Fprintln(f, `</div>`)
 				}
 
@@ -124,7 +130,6 @@ func main() {
 
 					if hasVersions(node) {
 						fmt.Fprintln(f, `<div class="versions">`)
-						fmt.Fprintln(f, `Versions:`)
 						for _, v := range versions {
 							class := ""
 							if v == version {
