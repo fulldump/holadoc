@@ -76,7 +76,7 @@ func main() {
 					continue
 				}
 
-				newFilename := path.Join(c.Www, version, language, getOutputPath(node, variation)+".html")
+				newFilename := path.Join(c.Www, getOutputPath(node, variation, language, version))
 
 				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
 
@@ -466,7 +466,7 @@ var basepath = "/"
 
 func getLink(n *Node, lang, version string) string {
 	variation := getBestVariation(n.Variations, lang, version)
-	return path.Join(basepath, version, lang, getOutputPath(n, variation)+".html")
+	return path.Join(basepath, getOutputPath(n, variation, lang, version))
 }
 
 func getBreadcrumb(n *Node, lang, version string) string {
@@ -569,7 +569,7 @@ func (n *Node) PrettyPrint(indent int) {
 	}
 }
 
-func getOutputPath(node *Node, variation *Variation) string {
+func getOutputPath(node *Node, variation *Variation, lang, version string) string {
 
 	if variation == nil {
 		return "NIL VARIATION!!! panic(?)"
@@ -611,7 +611,18 @@ func getOutputPath(node *Node, variation *Variation) string {
 		node = node.Parent
 	}
 
-	return path.Join(result...)
+	defaultLanguage := languages[0]
+
+	hasVersions := true
+	if hasVersions {
+		result = append([]string{version}, result...)
+	}
+
+	if lang != defaultLanguage {
+		result = append([]string{lang}, result...)
+	}
+
+	return path.Join(result...) + ".html"
 }
 
 func readNodes(root *Node, src string) { // todo: return errors instead of miserably panic
