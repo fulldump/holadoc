@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<title>Map</title>
+<meta name="description" content="Map">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- map es src/30_docs/{version}/3_indexes/2_index-types/1_map-index/map_v1_es.html v1 -->
+<div class="top">
+Languages:
+<a href="/docs/v2/indices/tipos-de-indices/map/index.html">en</a>
+<a href="/es/docs/v2/indices/tipos-de-indices/map/index.html">es</a>
+<a href="/zh/docs/v2/indices/tipos-de-indices/map/index.html">zh</a>
+</div>
+<div class="tree">
+<div class="item"><a href="/zh/products/index.html">Products</a></div>
+<div class="item"><a href="/zh/pricing/index.html">Pricing</a></div>
+<div class="item active"><a href="/zh/docs/index.html">Documentación</a></div>
+<div class="children">
+<div class="item"><a href="/zh/docs/v2/getting-started/index.html">Getting started</a></div>
+<div class="item"><a href="/zh/docs/v2/collections/index.html">集合</a></div>
+<div class="children">
+<div class="item"><a href="/zh/docs/v2/collections/creating-collections/index.html">Creating collections</a></div>
+</div>
+<div class="item active"><a href="/zh/docs/v2/indices/index.html">Índices</a></div>
+<div class="children">
+<div class="item"><a href="/zh/docs/v2/indices/creating-indexes/index.html">Creating indexes</a></div>
+<div class="item active"><a href="/zh/docs/v2/indices/tipos-de-indices/index.html">Tipos de índices</a></div>
+<div class="children">
+<div class="item active selected"><a href="/zh/docs/v2/indices/tipos-de-indices/map/index.html">Map</a></div>
+<div class="item"><a href="/zh/docs/v2/indices/tipos-de-indices/btree-index/index.html">B-Tree Index</a></div>
+</div>
+</div>
+</div>
+<div class="item"><a href="/zh/blog/index.html">Blog</a></div>
+</div>
+<div class="content">
+<div class="versions">
+Versions:
+<a class="" href="/zh/docs/v1/indices/tipos-de-indices/map/index.html">v1</a>
+<a class="selected" href="/zh/docs/v2/indices/tipos-de-indices/map/index.html">v2</a>
+</div>
+<div class="breadcrumb"><a class="item" href="/zh/index.html">Inicio</a><span class="arrow">→</span><a class="item" href="/zh/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/zh/docs/v2/indices/index.html">Índices</a><span class="arrow">→</span><a class="item" href="/zh/docs/v2/indices/tipos-de-indices/index.html">Tipos de índices</a><span class="arrow">→</span><a class="item selected" href="/zh/docs/v2/indices/tipos-de-indices/map/index.html">Map</a></div><div class="alert">This has been unchanged since version v1</div>
+<h1>Map</h1></div>
+<div class="footer">
+HolaDoc
+</div>
+<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>

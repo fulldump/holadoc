@@ -19,6 +19,8 @@ import (
 	"github.com/fulldump/goconfig"
 )
 
+// TODO: use https://github.com/alecthomas/chroma?tab=readme-ov-file to highlight code :D
+
 type config struct {
 	Src       string `json:"src"`
 	Www       string `json:"www"`
@@ -91,6 +93,8 @@ func main() {
 				f.WriteString(`<html lang="` + variation.Language + `">` + "\n")
 				f.WriteString(`<head>` + "\n")
 				f.WriteString(`<title>` + variation.Title + `</title>` + "\n")
+				f.WriteString(`<meta name="description" content="` + variation.Title + `">` + "\n")
+				f.WriteString(`<meta name="viewport" content="width=device-width, initial-scale=1">` + "\n")
 				f.WriteString(`<link href="/css/style.css" rel="stylesheet">` + "\n")
 				f.WriteString(`</head>` + "\n")
 				f.WriteString(`<body>` + "\n")
@@ -105,15 +109,6 @@ func main() {
 					for _, l := range languages {
 						fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
 					}
-
-					if hasVersions(node) {
-						fmt.Fprintln(f, `<br>`)
-						fmt.Fprintln(f, `Versions:`)
-						for _, v := range versions {
-							fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
-						}
-					}
-
 					fmt.Fprintln(f, `</div>`)
 				}
 
@@ -126,6 +121,19 @@ func main() {
 
 				{ // content
 					f.WriteString(`<div class="content">` + "\n")
+
+					if hasVersions(node) {
+						fmt.Fprintln(f, `<div class="versions">`)
+						fmt.Fprintln(f, `Versions:`)
+						for _, v := range versions {
+							class := ""
+							if v == version {
+								class += "selected"
+							}
+							fmt.Fprintln(f, `<a class="`+class+`" href="`+getLink(node, language, v)+`">`+v+`</a>`)
+						}
+						fmt.Fprintln(f, `</div>`)
+					}
 
 					breadcrumb := getBreadcrumb(node, language, version)
 					f.WriteString(breadcrumb)
@@ -337,6 +345,9 @@ func getBreadcrumb(n *Node, lang, version string) string {
 
 	result += `<div class="breadcrumb">`
 	for i, node := range breadcrumb {
+		if node.Name == "{version}" {
+			continue
+		}
 		if i > 0 {
 			result += `<span class="arrow">→</span>`
 		}
@@ -398,8 +409,9 @@ func getIndex(root, target *Node, lang, version string) string {
 
 func traverseNodes(root *Node, callback func(*Node)) {
 
+	callback(root)
 	for _, child := range root.Children {
-		callback(child)
+		// callback(child)
 		traverseNodes(child, callback)
 	}
 }
@@ -434,13 +446,9 @@ func getOutputPath(node *Node, variation *Variation, lang, version string) strin
 		return "NIL VARIATION!!! panic(?)"
 	}
 
-	result := []string{
-		variation.Url,
-	}
+	result := []string{}
 
-	node = node.Parent
-
-	for node != nil {
+	for node != nil && node.Parent != nil {
 
 		p := ""
 
@@ -475,17 +483,13 @@ func getOutputPath(node *Node, variation *Variation, lang, version string) strin
 	}
 
 	defaultLanguage := languages[0]
-
-	// hasVersions := true
-	// if hasVersions {
-	// 	result = append([]string{version}, result...)
-	// }
-
 	if lang != defaultLanguage {
 		result = append([]string{lang}, result...)
 	}
 
-	return path.Join(result...) + ".html"
+	result = append(result, "index.html")
+
+	return path.Join(result...)
 }
 
 func copyFile(src, dst string) {
