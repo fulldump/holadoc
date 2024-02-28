@@ -35,7 +35,7 @@ func main() {
 	c := config{
 		Src:       "src/",
 		Www:       "www/",
-		Versions:  "v2,v1",
+		Versions:  "v1,v2",
 		Languages: "en,es,zh",
 	}
 	goconfig.Read(&c)
@@ -102,11 +102,15 @@ func main() {
 					for _, l := range languages {
 						fmt.Fprintln(f, `<a href="`+getLink(node, l, version)+`">`+l+`</a>`)
 					}
-					fmt.Fprintln(f, `<br>`)
-					fmt.Fprintln(f, `Versions:`)
-					for _, v := range versions {
-						fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
+
+					if hasVersions(node) {
+						fmt.Fprintln(f, `<br>`)
+						fmt.Fprintln(f, `Versions:`)
+						for _, v := range versions {
+							fmt.Fprintln(f, `<a href="`+getLink(node, language, v)+`">`+v+`</a>`)
+						}
 					}
+
 					fmt.Fprintln(f, `</div>`)
 				}
 
@@ -158,6 +162,22 @@ html, body {
 
 .tree .children .children .children .item a {
   padding-left: 64px;
+}
+
+.tree .children .children .children .children .item a {
+  padding-left: 80px;
+}
+
+.tree .children .children .children .children .children .item a {
+  padding-left: 96px;
+}
+
+.tree .children .children .children .children .children .children .item a {
+  padding-left: 112px;
+}
+
+.tree .children .children .children .children .children .children .children .item a {
+  padding-left: 128px;
 }
 
 .tree .children {
@@ -417,6 +437,18 @@ document.addEventListener('load', highlightIndex, true);
 
 }
 
+func hasVersions(node *Node) bool {
+	if node == nil {
+		return false
+	}
+
+	if node.Name == "{version}" {
+		return true
+	}
+
+	return hasVersions(node.Parent)
+}
+
 // return the best variation for a given language and version
 func getBestVariation(variations []*Variation, language, version string) *Variation {
 	var variation *Variation
@@ -510,6 +542,11 @@ func getIndex(root, target *Node, lang, version string) string {
 	result := ""
 
 	for _, child := range root.Children {
+
+		if child.Name == "{version}" {
+			result += getIndex(child, target, lang, version)
+			continue
+		}
 
 		link := getLink(child, lang, version)
 
@@ -606,6 +643,10 @@ func getOutputPath(node *Node, variation *Variation, lang, version string) strin
 			p = node.Name // fallback
 		}
 
+		if p == "{version}" {
+			p = version
+		}
+
 		result = append([]string{p}, result...)
 
 		node = node.Parent
@@ -613,10 +654,10 @@ func getOutputPath(node *Node, variation *Variation, lang, version string) strin
 
 	defaultLanguage := languages[0]
 
-	hasVersions := true
-	if hasVersions {
-		result = append([]string{version}, result...)
-	}
+	// hasVersions := true
+	// if hasVersions {
+	// 	result = append([]string{version}, result...)
+	// }
 
 	if lang != defaultLanguage {
 		result = append([]string{lang}, result...)
@@ -633,18 +674,25 @@ func readNodes(root *Node, src string) { // todo: return errors instead of miser
 
 	for _, entry := range entries {
 		if entry.IsDir() {
-			parts := strings.Split(entry.Name(), "_")
-			if len(parts) != 2 {
-				continue
-			}
-			order, err := strconv.Atoi(parts[0])
-			if err != nil {
-				continue
+			var order int
+			var name string
+			if entry.Name() == "{version}" {
+				name = entry.Name()
+			} else {
+				parts := strings.Split(entry.Name(), "_")
+				if len(parts) != 2 {
+					continue
+				}
+				order, err = strconv.Atoi(parts[0])
+				if err != nil {
+					continue
+				}
+				name = parts[1]
 			}
 
 			newNode := &Node{
 				Order: order,
-				Name:  parts[1],
+				Name:  name,
 				Path:  src,
 			}
 			readNodes(newNode, path.Join(src, entry.Name()))

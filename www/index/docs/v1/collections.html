@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Collections</title>
+</head>
+<body>
+<!-- collections en src/1_index/30_docs/{version}/2_collections/collections_v1_en.html v1 -->
+<div class="top">
+Languages:
+<a href="/index/docs/v1/collections.html">en</a>
+<a href="/es/index/docs/v1/colecciones.html">es</a>
+<a href="/zh/index/docs/v1/collections.html">zh</a>
+<br>
+Versions:
+<a href="/index/docs/v1/collections.html">v1</a>
+<a href="/index/docs/v2/collections.html">v2</a>
+</div>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.tree {
+  float: left;
+  width: 280px;
+}
+
+.tree .item {
+}
+
+.tree .item a {
+  display: block;
+  border-left: solid transparent 4px;
+  padding: 8px;
+  text-decoration: none;
+  color: #333;
+}
+
+.tree .item.selected a {
+  color: black;
+  border-color: #1ba361;
+  font-weight: bold;
+  background-color: rgb(227, 252, 247);
+}
+
+.tree .item a:hover {
+  background-color: #e8edeb;
+}
+
+.tree > .item a {
+  padding-left: 16px;
+}
+
+.tree .children .item a {
+  padding-left: 32px;
+}
+
+.tree .children .children .item a {
+  padding-left: 48px;
+}
+
+.tree .children .children .children .item a {
+  padding-left: 64px;
+}
+
+.tree .children .children .children .children .item a {
+  padding-left: 80px;
+}
+
+.tree .children .children .children .children .children .item a {
+  padding-left: 96px;
+}
+
+.tree .children .children .children .children .children .children .item a {
+  padding-left: 112px;
+}
+
+.tree .children .children .children .children .children .children .children .item a {
+  padding-left: 128px;
+}
+
+.tree .children {
+  /*padding-left: 16px;*/
+}
+
+.tree .children {
+    display: none;
+}
+
+.tree .item.active + .children {
+    display: block;
+}
+
+.index {
+  float: right;
+  position: sticky;
+  top: 0;
+  padding-top: 16px;
+  margin-top: 16px;
+}
+
+.index a {
+  display: block;
+  text-decoration: none;
+  color: gray;
+  padding: 4px 8px;
+}
+
+.index .index-h2 a {
+  padding-left: 16px;
+}
+
+.index .index-h3 a {
+  padding-left: 32px;
+}
+
+.index .index-h4 a {
+  padding-left: 48px;
+}
+
+.index .index-h5 a {
+  padding-left: 64px;
+}
+
+.index .index-h6 {
+  padding-left: 80px;
+}
+
+.index a {
+  border-left: solid silver 1px;
+}
+
+.index a.active {
+  border-left: solid black 3px;
+  margin-left: -1px;
+  color: black;
+  font-weight: bold;
+}
+
+.index a:hover {
+  zborder-left: solid black 3px;
+  zmargin-left: -1px;
+  color: black;
+  text-decoration: underline;
+}
+
+.content {
+  padding-left: 300px;
+  min-height: 80vh;
+}
+
+.content .alert {
+  color: dodgerblue;
+  background-color: ;
+  border: solid dodgerblue 1px;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.breadcrumb .arrow {
+  color: silver;
+}
+
+.breadcrumb .item {
+  color: gray;
+  text-decoration: none;
+}
+
+.breadcrumb .item:hover {
+  color: black;
+  text-decoration: underline 1px silver;
+}
+
+.breadcrumb .item.selected {
+  color: black;
+}
+
+.top {
+  border-bottom: solid silver 1px;
+  margin-bottom: 16px;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  padding: 32px;
+  text-align: center;
+  min-height: 500px;
+}
+
+.home-desc {
+  display: none;
+}
+
+</style>
+<div class="tree">
+<div class="item active"><a href="/index.html">Inicio</a></div>
+<div class="children">
+<div class="item"><a href="/index/products.html">Products</a></div>
+<div class="item"><a href="/index/pricing.html">Pricing</a></div>
+<div class="item active"><a href="/index/docs.html">Documentación</a></div>
+<div class="children">
+<div class="item"><a href="/index/docs/v1/getting-started.html">Getting started</a></div>
+<div class="item active selected"><a href="/index/docs/v1/collections.html">Collections</a></div>
+<div class="children">
+<div class="item"><a href="/index/docs/v1/collections/creating-collections.html">Creating collections</a></div>
+</div>
+<div class="item"><a href="/index/docs/v1/indices.html">Índices</a></div>
+<div class="children">
+<div class="item"><a href="/index/docs/v1/indices/creating-indexes.html">Creating indexes</a></div>
+<div class="item"><a href="/index/docs/v1/indices/tipos-de-indices.html">Tipos de índices</a></div>
+<div class="children">
+<div class="item"><a href="/index/docs/v1/indices/tipos-de-indices/map.html">Map</a></div>
+<div class="item"><a href="/index/docs/v1/indices/tipos-de-indices/btree-index.html">B-Tree Index</a></div>
+</div>
+</div>
+<div class="item"><a href="/index/docs/index/last-entry.html">This is the last entry</a></div>
+</div>
+<div class="item"><a href="/index/blog.html">Blog</a></div>
+</div>
+</div>
+<div class="content">
+<div class="breadcrumb"><a class="item" href="/index.html">Inicio</a><span class="arrow">→</span><a class="item" href="/index/docs.html">Documentación</a><span class="arrow">→</span><a class="item" href="/index/docs/index.html">Versions</a><span class="arrow">→</span><a class="item selected" href="/index/docs/v1/collections.html">Collections</a></div><h1>Collections</h1>
+<p>An InceptionDB Collection is a container that holds a set of documents. Collections are analogous to tables in relational databases but are more flexible, as the documents within a collection can have different fields or structures. This flexibility is possible because InceptionDB is a NoSQL database, which generally allows for schema-less data storage.</p>
+<p>Each document in a collection is identified by a unique identifier, and you can perform various operations on these documents, such as inserting, querying, updating, and deleting. Collections are designed to be highly scalable and support fast data retrieval and manipulation, making them suitable for handling a wide range of data types and structures, from simple key-value pairs to complex nested objects.</p>
+<p>In the context of InceptionDB, collections might also support advanced features like indexing for efficient queries, transactions for ensuring data integrity, and access control mechanisms for securing data access. Collections are a fundamental part of working with InceptionDB, as they organize and manage the data you store within the database.</p>
+
+
+</div>
+<div class="footer">
+HolaDoc
+</div>
+<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>
