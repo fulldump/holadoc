@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Golang example</title>
+<meta name="description" content="Golang example">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- golang-example en src/30_docs/{version}/4_golang-example/golang-example_v1_en.html v1 -->
+<div class="top">
+<a href="/" class="logo"></a>
+<div class="languages">
+<a class="selected" href="/docs/v2/golang-example/index.html">en</a>
+<a class="" href="/es/docs/v2/golang-example/index.html">es</a>
+<a class="" href="/zh/docs/v2/golang-example/index.html">zh</a>
+</div>
+</div>
+<div class="tree">
+<div class="item"><a href="/products/index.html">Products</a></div>
+<div class="item"><a href="/pricing/index.html">Pricing</a></div>
+<div class="item active"><a href="/docs/index.html">Documentación</a></div>
+<div class="children">
+<div class="item"><a href="/docs/v2/getting-started/index.html">Getting started</a></div>
+<div class="item"><a href="/docs/v2/collections/index.html">Collections</a></div>
+<div class="children">
+<div class="item"><a href="/docs/v2/collections/creating-collections/index.html">Creating collections</a></div>
+<div class="item"><a href="/docs/v2/collections/insert-documents/index.html">Insert documents</a></div>
+</div>
+<div class="item"><a href="/docs/v2/indices/index.html">Índices</a></div>
+<div class="children">
+<div class="item"><a href="/docs/v2/indices/creating-indexes/index.html">Creating indexes</a></div>
+<div class="item"><a href="/docs/v2/indices/tipos-de-indices/index.html">Tipos de índices</a></div>
+<div class="children">
+<div class="item"><a href="/docs/v2/indices/tipos-de-indices/map/index.html">Map</a></div>
+<div class="item"><a href="/docs/v2/indices/tipos-de-indices/btree-index/index.html">B-Tree Index</a></div>
+</div>
+</div>
+<div class="item active selected"><a href="/docs/v2/golang-example/index.html">Golang example</a></div>
+</div>
+<div class="item"><a href="/blog/index.html">Blog</a></div>
+</div>
+<div class="content">
+<div class="versions">
+<a class="" href="/docs/v1/golang-example/index.html">v1</a>
+<a class="selected" href="/docs/v2/golang-example/index.html">v2</a>
+</div>
+<div class="breadcrumb"><a class="item" href="/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/docs/v2/golang-example/index.html">Golang example</a></div><div class="document">
+<div class="alert">This has been unchanged since version v1</div>
+<h1>Golang example</h1>
+
+
+<code lang="go"><pre tabindex="0" style="color:#93a1a1;background-color:#002b36;"><code><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L1"><a style="outline: none; text-decoration:none; color:inherit" href="#L1">1</a></span><span><span style="color:#268bd2">func</span> <span style="color:#268bd2">getAttribute</span>(node <span style="color:#719e07">*</span>html.Node, key <span style="color:#dc322f">string</span>) <span style="color:#dc322f">string</span> {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L2"><a style="outline: none; text-decoration:none; color:inherit" href="#L2">2</a></span><span>	<span style="color:#719e07">for</span> _, a <span style="color:#719e07">:=</span> <span style="color:#719e07">range</span> node.Attr {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L3"><a style="outline: none; text-decoration:none; color:inherit" href="#L3">3</a></span><span>		<span style="color:#719e07">if</span> strings.<span style="color:#268bd2">EqualFold</span>(a.Key, key) {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L4"><a style="outline: none; text-decoration:none; color:inherit" href="#L4">4</a></span><span>			<span style="color:#719e07">return</span> a.Val
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L5"><a style="outline: none; text-decoration:none; color:inherit" href="#L5">5</a></span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L6"><a style="outline: none; text-decoration:none; color:inherit" href="#L6">6</a></span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L7"><a style="outline: none; text-decoration:none; color:inherit" href="#L7">7</a></span><span>	<span style="color:#719e07">return</span> <span style="color:#2aa198">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L8"><a style="outline: none; text-decoration:none; color:inherit" href="#L8">8</a></span><span>}
+</span></span></code></pre></code></div>
+</div>
+<div class="footer">
+HolaDoc
+</div>
+<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>

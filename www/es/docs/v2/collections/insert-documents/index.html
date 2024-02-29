@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Insert documents</title>
+<meta name="description" content="Insert documents">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- insert-documents en src/30_docs/{version}/2_collections/2_insert-documents/insert-documents_en_v1.html v1 -->
+<div class="top">
+<a href="/" class="logo"></a>
+<div class="languages">
+<a class="" href="/docs/v2/collections/insert-documents/index.html">en</a>
+<a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">es</a>
+<a class="" href="/zh/docs/v2/collections/insert-documents/index.html">zh</a>
+</div>
+</div>
+<div class="tree">
+<div class="item"><a href="/es/products/index.html">Products</a></div>
+<div class="item"><a href="/es/pricing/index.html">Pricing</a></div>
+<div class="item active"><a href="/es/docs/index.html">Documentación</a></div>
+<div class="children">
+<div class="item"><a href="/es/docs/v2/primeros-pasos/index.html">Primeros pasos</a></div>
+<div class="item active"><a href="/es/docs/v2/colecciones/index.html">Colecciones</a></div>
+<div class="children">
+<div class="item"><a href="/es/docs/v2/collections/creating-collections/index.html">Creating collections</a></div>
+<div class="item active selected"><a href="/es/docs/v2/collections/insert-documents/index.html">Insert documents</a></div>
+</div>
+<div class="item"><a href="/es/docs/v2/indices/index.html">Índices</a></div>
+<div class="children">
+<div class="item"><a href="/es/docs/v2/indices/creating-indexes/index.html">Creating indexes</a></div>
+<div class="item"><a href="/es/docs/v2/indices/tipos-de-indices/index.html">Tipos de índices</a></div>
+<div class="children">
+<div class="item"><a href="/es/docs/v2/indices/tipos-de-indices/map/index.html">Map</a></div>
+<div class="item"><a href="/es/docs/v2/indices/tipos-de-indices/btree-index/index.html">B-Tree Index</a></div>
+</div>
+</div>
+<div class="item"><a href="/es/docs/v2/golang-example/index.html">Golang example</a></div>
+</div>
+<div class="item"><a href="/es/blog/index.html">Blog</a></div>
+</div>
+<div class="content">
+<div class="versions">
+<a class="" href="/es/docs/v1/collections/insert-documents/index.html">v1</a>
+<a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">v2</a>
+</div>
+<div class="breadcrumb"><a class="item" href="/es/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/es/docs/v2/colecciones/index.html">Colecciones</a><span class="arrow">→</span><a class="item selected" href="/es/docs/v2/collections/insert-documents/index.html">Insert documents</a></div><div class="index">
+On this page:
+<div class="index-h2">
+<a href="#First%20of%20all...">First of all...</a>
+</div>
+<div class="index-h2">
+<a href="#Second%20of%20all...">Second of all...</a>
+</div>
+</div>
+<div class="document">
+<div class="alert">This has been unchanged since version v1</div>
+<h1>Insert documents</h1>
+
+<p>To insert documents... bla bla bla</p>
+
+<h2 id="First%20of%20all...">First of all...</h2>
+
+<code lang="javascript"><pre tabindex="0" style="color:#93a1a1;background-color:#002b36;"><code><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L1"><a style="outline: none; text-decoration:none; color:inherit" href="#L1">1</a></span><span><span style="color:#268bd2">let</span> result <span style="color:#719e07">=</span> fetch(<span style="color:#2aa198">&#39;https://incepitondb.io/v0/databases/xxxx/collections/fruits:insert&#39;</span>, {
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L2"><a style="outline: none; text-decoration:none; color:inherit" href="#L2">2</a></span><span>	method<span style="color:#719e07">:</span> <span style="color:#2aa198">&#39;POST&#39;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L3"><a style="outline: none; text-decoration:none; color:inherit" href="#L3">3</a></span><span>	body<span style="color:#719e07">:</span> JSON.stringify({
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L4"><a style="outline: none; text-decoration:none; color:inherit" href="#L4">4</a></span><span>		<span style="color:#2aa198">&#34;hello&#34;</span><span style="color:#719e07">:</span> <span style="color:#2aa198">&#34;world&#34;</span>,
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L5"><a style="outline: none; text-decoration:none; color:inherit" href="#L5">5</a></span><span>	}),
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L6"><a style="outline: none; text-decoration:none; color:inherit" href="#L6">6</a></span><span>});
+</span></span></code></pre></code>
+
+<h2 id="Second%20of%20all...">Second of all...</h2>
+
+<code lang="bash"><pre tabindex="0" style="color:#93a1a1;background-color:#002b36;"><code><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L1"><a style="outline: none; text-decoration:none; color:inherit" href="#L1">1</a></span><span>curl https://inceptiondb.hola.cloud/v1/databases/ceceb998-c208-4efe-ae20-a81feee5aab9/collections/example:find <span style="color:#cb4b16">\
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L2"><a style="outline: none; text-decoration:none; color:inherit" href="#L2">2</a></span><span><span style="color:#cb4b16"></span>-H <span style="color:#2aa198">&#39;Api-Key: 45a685f9-9c34-453a-95d1-7c033e96109b&#39;</span> <span style="color:#cb4b16">\
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L3"><a style="outline: none; text-decoration:none; color:inherit" href="#L3">3</a></span><span><span style="color:#cb4b16"></span>-H <span style="color:#2aa198">&#39;Api-Secret: 5b27b23a-96f1-4d3d-b631-fbd85f73028b&#39;</span> <span style="color:#cb4b16">\
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L4"><a style="outline: none; text-decoration:none; color:inherit" href="#L4">4</a></span><span><span style="color:#cb4b16"></span>-d <span style="color:#2aa198">&#39;{
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L5"><a style="outline: none; text-decoration:none; color:inherit" href="#L5">5</a></span><span><span style="color:#2aa198">&#34;limit&#34;: 10,
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L6"><a style="outline: none; text-decoration:none; color:inherit" href="#L6">6</a></span><span><span style="color:#2aa198">&#34;filter&#34;: {&#34;color&#34;: &#34;yellow&#34;}
+</span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L7"><a style="outline: none; text-decoration:none; color:inherit" href="#L7">7</a></span><span><span style="color:#2aa198">}&#39;</span>
+</span></span></code></pre></code></div>
+</div>
+<div class="footer">
+HolaDoc
+</div>
+<script>
+
+// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+function isElementInViewport (el) {
+    
+    // //special bonus for those using jQuery
+    // if (typeof $ === "function" && el instanceof $) {
+    //     el = el[0];
+    // }
+		
+    var rect     = el.getBoundingClientRect(),
+        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+
+    // Return false if it's not in the viewport
+    if (rect.right < 0 || rect.bottom < 0 
+            || rect.left > vWidth || rect.top > vHeight)
+        return false;
+
+    // Return true if any of its four corners are visible
+    return (
+          el.contains(efp(rect.left,  rect.top))
+      ||  el.contains(efp(rect.right, rect.top))
+      ||  el.contains(efp(rect.right, rect.bottom))
+      ||  el.contains(efp(rect.left,  rect.bottom))
+    );
+}
+
+function highlightIndex() {
+	let v = false;
+	document.querySelectorAll('.index a').forEach(a => {
+		const el = document.getElementById(a.getAttribute('href').slice(1));
+		
+		if (!v && isElementInViewport(el)) {
+			a.classList.add('active');	
+			v = true;
+		} else {
+			a.classList.remove('active');	
+		}
+	});
+}
+
+document.addEventListener('scroll', highlightIndex, true);
+document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>

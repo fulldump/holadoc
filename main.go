@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"cmp"
 	"fmt"
 	"io"
@@ -13,10 +14,13 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alecthomas/chroma"
+	html2 "github.com/alecthomas/chroma/formatters/html"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
+	"github.com/fulldump/goconfig"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-
-	"github.com/fulldump/goconfig"
 )
 
 // TODO: use https://github.com/alecthomas/chroma?tab=readme-ov-file to highlight code :D
@@ -143,10 +147,6 @@ func main() {
 					breadcrumb := getBreadcrumb(node, language, version)
 					f.WriteString(breadcrumb)
 
-					if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
-						fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
-					}
-
 					src, err := os.Open(variation.Filename)
 					if err != nil {
 						panic(err.Error())
@@ -178,6 +178,50 @@ func main() {
 									onThisPage += `<a href="#` + url.PathEscape(title) + `">` + title + `</a>` + "\n"
 									onThisPage += `</div>` + "\n"
 								}
+								if tag == "code" {
+									code := node.FirstChild.Data
+									code = strings.TrimPrefix(code, "\n")
+
+									lexer := lexers.Get(getAttribute(node, "lang"))
+									if lexer == nil {
+										lexer = lexers.Analyse(code)
+									}
+									if lexer == nil {
+										lexer = lexers.Fallback
+									}
+									lexer = chroma.Coalesce(lexer)
+
+									style := styles.Get("solarized-dark") // monokai github-dark
+									if style == nil {
+										style = styles.Fallback
+									}
+									formatter := html2.New(html2.WithLineNumbers(true), html2.LinkableLineNumbers(true, "L"))
+
+									iterator, err := lexer.Tokenise(nil, code)
+
+									codeOutput := &bytes.Buffer{}
+									err = formatter.Format(codeOutput, style, iterator)
+									if err != nil {
+										panic(err.Error())
+									}
+
+									node.RemoveChild(node.FirstChild)
+
+									doc := &html.Node{
+										Type:     html.ElementNode,
+										Data:     "body",
+										DataAtom: atom.Body,
+									}
+
+									parts, err := html.ParseFragment(codeOutput, doc)
+									if err != nil {
+										panic(err)
+									}
+									for _, part := range parts {
+										node.AppendChild(part)
+									}
+
+								}
 							})
 						}
 
@@ -190,9 +234,16 @@ func main() {
 					}
 
 					{ // print content
+						f.WriteString(`<div class="document">` + "\n")
+
+						if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
+							fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
+						}
+
 						for _, n := range nodes {
 							html.Render(f, n)
 						}
+						f.WriteString(`</div>` + "\n")
 					}
 
 					// 					fmt.Fprintln(f, `<!-- begin wwww.htmlcommentbox.com -->
@@ -272,6 +323,15 @@ document.addEventListener('load', highlightIndex, true);
 
 }
 
+func getAttribute(node *html.Node, key string) string {
+	for _, a := range node.Attr {
+		if strings.EqualFold(a.Key, key) {
+			return a.Val
+		}
+	}
+	return ""
+}
+
 func hasVersions(node *Node) bool {
 	if node == nil {
 		return false
@@ -340,8 +400,15 @@ func getBreadcrumb(n *Node, lang, version string) string {
 	breadcrumb := []*Node{}
 
 	for n != nil && len(n.Variations) > 0 {
+		if n.Parent == nil {
+			break
+		}
 		breadcrumb = append(breadcrumb, n)
 		n = n.Parent
+	}
+
+	if len(breadcrumb) < 2 {
+		return ""
 	}
 
 	slices.Reverse(breadcrumb)
@@ -573,7 +640,7 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 
 		} else {
 			if strings.ToLower(path.Ext(entry.Name())) != ".html" {
-				fmt.Println("copy", entry.Name(), src)
+				copyFile(path.Join(src, entry.Name()), path.Join(www, entry.Name()))
 				continue
 			}
 
@@ -636,12 +703,11 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 }
 
 func traverseHtml(n *html.Node, callback func(node *html.Node)) {
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		traverseHtml(c, callback)
+	}
 	if n.Type == html.ElementNode {
 		callback(n)
-	}
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-
-		traverseHtml(c, callback)
 	}
 }
 
