@@ -263,16 +263,6 @@ func main() {
 					"content":     template.HTML(content),
 				}
 
-				gohtml, err := os.ReadFile("src/template.gohtml")
-				if err != nil {
-					panic(err.Error())
-				}
-
-				temp, err := template.New("").Parse(string(gohtml))
-				if err != nil {
-					panic(err.Error())
-				}
-
 				newFilename := path.Join(c.Www, getOutputPath(node, variation, language, version))
 				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
 
@@ -281,6 +271,53 @@ func main() {
 					panic(err.Error())
 				}
 
+				temp := getTemplate(node, map[string]any{
+					"link": func(p string) template.HTML {
+
+						target := getNode(root, p)
+						if target == nil {
+							panic("link for '" + p + "' does not exist")
+						}
+
+						class := "link"
+						if target == node {
+							class += " selected"
+						}
+
+						variation := getBestVariation(target.Variations, language, version)
+
+						return template.HTML(`<a class="` + class + `" href="` + getLink(target, language, version) + `">` + variation.Title + `</a>`)
+					},
+
+					"tree": func(p string) template.HTML {
+
+						target := getNode(root, p)
+						if target == nil {
+							panic("link for '" + p + "' does not exist")
+						}
+
+						return template.HTML(getIndex(target, node, language, version))
+					},
+
+					"isUnder": func(p string) bool {
+
+						target := getNode(root, p)
+						if target == nil {
+							panic("link for '" + p + "' does not exist")
+						}
+
+						n := node
+
+						for n != nil {
+							if n == target {
+								return true
+							}
+							n = n.Parent
+						}
+
+						return false
+					},
+				})
 				temp.Execute(f, data)
 
 				err = f.Close()
@@ -293,6 +330,32 @@ func main() {
 
 	})
 
+}
+
+func getTemplate(node *Node, funcs template.FuncMap) *template.Template {
+
+	for node != nil {
+		if node.Template == "" {
+			node = node.Parent
+			continue
+		}
+
+		gohtml, err := os.ReadFile(node.Template)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		temp, err := template.New("").Funcs(funcs).Parse(string(gohtml))
+		if err != nil {
+			panic(err.Error())
+		}
+
+		return temp
+	}
+
+	panic("No template found!!!")
+
+	return nil
 }
 
 func getNode(root *Node, path string) *Node {
@@ -500,6 +563,7 @@ type Node struct {
 	Children   []*Node
 	Variations []*Variation
 	Parent     *Node
+	Template   string
 }
 
 type Variation struct {
@@ -645,6 +709,10 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 
 		} else {
 			ext := strings.ToLower(path.Ext(entry.Name()))
+			if ext == ".gohtml" {
+				root.Template = path.Join(src, entry.Name())
+				continue
+			}
 			if !in([]string{".html", ".md"}, ext) {
 				copyFile(path.Join(src, entry.Name()), path.Join(www, entry.Name()))
 				continue

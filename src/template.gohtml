@@ -11,9 +11,18 @@
 <div class="top">
     <a href="/" class="logo"></a>
     {{ .langMenu }}
+
+    <div class="main-menu">
+        {{ link "products" }}
+        {{ link "pricing" }}
+        {{ link "docs" }}
+        {{ link "blog" }}
+    </div>
 </div>
 <div class="tree">
-{{ .tree }}
+    {{ if isUnder "docs" }}
+        {{ tree "docs" }}
+    {{ end }}
 </div>
 <div class="content">
     {{ .versionMenu }}
@@ -25,6 +34,7 @@
 </div>
 <div class="footer">
     HolaDoc
+
 </div>
 <script>
 

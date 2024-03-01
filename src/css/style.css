@@ -16,6 +16,22 @@ a:hover {
   text-decoration: underline;
 }
 
+
+.main-menu {
+  text-align: center;
+  padding-top: 15px;
+}
+
+.main-menu .link {
+  color: white;
+  padding: 4px 16px;
+  border-bottom: solid 3px transparent;
+}
+
+.main-menu .link.selected {
+  border-color: #bcfb5f;
+}
+
 .tree {
   float: left;
   width: 280px;
@@ -232,6 +248,7 @@ a:hover {
   width: 250px;
   background: url('/img/logo.png') center center no-repeat;
   background-size: contain;
+  float: left;
 }
 
 .footer {
