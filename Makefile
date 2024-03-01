@@ -1,13 +1,13 @@
 
 .PHONY: build
 build:
-	go build -o bin/holadoc main.go
+	go build -o bin/holadoc holadoc
 
 .PHONY: run
 run:
-	go run main.go
+	go run holadoc
 
 .PHONY: serve
 serve:
-	SERVE=:8080 go run main.go
+	SERVE=:8080 go run holadoc
 

@@ -1,9 +1,7 @@
 # github.com/alecthomas/chroma v0.10.0
 ## explicit; go 1.13
 github.com/alecthomas/chroma
-github.com/alecthomas/chroma/formatters
 github.com/alecthomas/chroma/formatters/html
-github.com/alecthomas/chroma/formatters/svg
 github.com/alecthomas/chroma/lexers
 github.com/alecthomas/chroma/lexers/a
 github.com/alecthomas/chroma/lexers/b
@@ -32,7 +30,6 @@ github.com/alecthomas/chroma/lexers/w
 github.com/alecthomas/chroma/lexers/x
 github.com/alecthomas/chroma/lexers/y
 github.com/alecthomas/chroma/lexers/z
-github.com/alecthomas/chroma/quick
 github.com/alecthomas/chroma/styles
 # github.com/dlclark/regexp2 v1.4.0
 ## explicit
@@ -41,6 +38,17 @@ github.com/dlclark/regexp2/syntax
 # github.com/fulldump/goconfig v1.6.1
 ## explicit; go 1.5
 github.com/fulldump/goconfig
+# github.com/yuin/goldmark v1.7.0
+## explicit; go 1.19
+github.com/yuin/goldmark
+github.com/yuin/goldmark/ast
+github.com/yuin/goldmark/extension
+github.com/yuin/goldmark/extension/ast
+github.com/yuin/goldmark/parser
+github.com/yuin/goldmark/renderer
+github.com/yuin/goldmark/renderer/html
+github.com/yuin/goldmark/text
+github.com/yuin/goldmark/util
 # golang.org/x/net v0.21.0
 ## explicit; go 1.18
 golang.org/x/net/html

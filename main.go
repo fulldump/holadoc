@@ -19,11 +19,12 @@ import (
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/fulldump/goconfig"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	goldmarkHtml "github.com/yuin/goldmark/renderer/html"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
-
-// TODO: use https://github.com/alecthomas/chroma?tab=readme-ov-file to highlight code :D
 
 type config struct {
 	Src       string `json:"src"`
@@ -147,16 +148,30 @@ func main() {
 					breadcrumb := getBreadcrumb(node, language, version)
 					f.WriteString(breadcrumb)
 
-					src, err := os.Open(variation.Filename)
-					if err != nil {
-						panic(err.Error())
+					var htmlReader io.Reader
+
+					switch strings.ToLower(path.Ext(variation.Filename)) {
+					case ".html":
+						src, err := os.Open(variation.Filename)
+						if err != nil {
+							panic(err.Error())
+						}
+						htmlReader = src
+					case ".md":
+						src, err := os.ReadFile(variation.Filename)
+						if err != nil {
+							panic(err.Error())
+						}
+						htmlReader = md2html(src)
+						// htmlReader = strings.NewReader("Hello, this is the new md!")
 					}
+
 					doc := &html.Node{
 						Type:     html.ElementNode,
 						Data:     "body",
 						DataAtom: atom.Body,
 					}
-					nodes, err := html.ParseFragment(src, doc)
+					nodes, err := html.ParseFragment(htmlReader, doc)
 					if err != nil {
 						panic(err.Error())
 					}
@@ -178,11 +193,32 @@ func main() {
 									onThisPage += `<a href="#` + url.PathEscape(title) + `">` + title + `</a>` + "\n"
 									onThisPage += `</div>` + "\n"
 								}
+								if tag == "a" {
+									href := getAttribute(node, "href")
+									if href != "" {
+										target := getNode(root, href)
+										if target != nil {
+											setAttribute(node, "href", getLink(target, variation.Language, variation.Version))
+											if node.FirstChild != nil && node.FirstChild.FirstChild == nil && node.FirstChild.Type == html.TextNode {
+												node.FirstChild.Data = target.Name
+											} else if node.FirstChild == nil {
+												node.AppendChild(&html.Node{
+													Type:     html.TextNode,
+													DataAtom: 0,
+													Data:     target.Name,
+												})
+											}
+										}
+									}
+								}
 								if tag == "code" {
 									code := node.FirstChild.Data
 									code = strings.TrimPrefix(code, "\n")
 
 									lexer := lexers.Get(getAttribute(node, "lang"))
+									if lexer == nil {
+										lexer = lexers.Get(strings.TrimPrefix(getAttribute(node, "class"), "language-"))
+									}
 									if lexer == nil {
 										lexer = lexers.Analyse(code)
 									}
@@ -323,6 +359,26 @@ document.addEventListener('load', highlightIndex, true);
 
 }
 
+func getNode(root *Node, path string) *Node {
+	if path == "" {
+		return root
+	}
+
+	n := root
+out:
+	for _, p := range strings.Split(path, "/") {
+		for _, child := range n.Children {
+			if child.Name == p {
+				n = child
+				continue out
+			}
+		}
+		return nil
+	}
+
+	return n
+}
+
 func getAttribute(node *html.Node, key string) string {
 	for _, a := range node.Attr {
 		if strings.EqualFold(a.Key, key) {
@@ -330,6 +386,19 @@ func getAttribute(node *html.Node, key string) string {
 		}
 	}
 	return ""
+}
+
+func setAttribute(node *html.Node, key, value string) {
+	for i, a := range node.Attr {
+		if strings.EqualFold(a.Key, key) {
+			node.Attr[i].Val = value
+			return
+		}
+	}
+	node.Attr = append(node.Attr, html.Attribute{
+		Key: key,
+		Val: value,
+	})
 }
 
 func hasVersions(node *Node) bool {
@@ -639,7 +708,8 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 			root.Children = append(root.Children, newNode)
 
 		} else {
-			if strings.ToLower(path.Ext(entry.Name())) != ".html" {
+			ext := strings.ToLower(path.Ext(entry.Name()))
+			if !in([]string{".html", ".md"}, ext) {
 				copyFile(path.Join(src, entry.Name()), path.Join(www, entry.Name()))
 				continue
 			}
@@ -664,20 +734,7 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 
 			filename := path.Join(src, entry.Name())
 
-			f, err := os.Open(filename)
-
-			doc, err := html.Parse(f)
-			f.Close()
-			if err != nil {
-				panic(err.Error())
-			}
-
-			title := ""
-			traverseHtml(doc, func(node *html.Node) {
-				if node.Data == "h1" && node.FirstChild != nil {
-					title = node.FirstChild.Data
-				}
-			})
+			title := getTitle(filename)
 			if title == "" {
 				title = friendlyUrl // fallback
 				base, _ := os.Getwd()
@@ -700,6 +757,44 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 		return root.Children[i].Order < root.Children[j].Order
 	})
 
+}
+
+func getTitle(filename string) string {
+
+	var htmlReader io.Reader
+	f, err := os.Open(filename)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer f.Close()
+
+	switch strings.ToLower(path.Ext(filename)) {
+	case ".html":
+
+		htmlReader = f
+
+	case ".md":
+		b, err := io.ReadAll(f)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		htmlReader = md2html(b)
+	}
+
+	title := ""
+	doc, err := html.Parse(htmlReader)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	traverseHtml(doc, func(node *html.Node) {
+		if node.Data == "h1" && node.FirstChild != nil {
+			title = node.FirstChild.Data
+		}
+	})
+
+	return title
 }
 
 func traverseHtml(n *html.Node, callback func(node *html.Node)) {
@@ -727,4 +822,25 @@ func nodeIn(a []*Node, v *Node) bool {
 		}
 	}
 	return false
+}
+
+func md2html(md []byte) io.Reader {
+
+	gm := goldmark.New(
+		goldmark.WithExtensions(extension.GFM),
+		goldmark.WithParserOptions(
+		// parser.WithAutoHeadingID(),
+		),
+		goldmark.WithRendererOptions(
+			goldmarkHtml.WithXHTML(),
+			goldmarkHtml.WithUnsafe(),
+		),
+	)
+
+	buf := &bytes.Buffer{}
+	err := gm.Convert(md, buf)
+	if err != nil {
+		panic(err.Error())
+	}
+	return buf
 }
