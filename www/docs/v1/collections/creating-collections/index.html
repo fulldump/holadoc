@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Creating collections</title>
-<meta name="description" content="Creating collections">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/css/style.css" rel="stylesheet">
+    <title>Creating collections</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<!-- creating-collections en src/30_docs/{version}/2_collections/1_creating-collections/creating-collections_v1_en.html v1 -->
+
 <div class="top">
-<a href="/" class="logo"></a>
-<div class="languages">
-<a class="selected" href="/docs/v1/collections/creating-collections/index.html">en</a>
-<a class="" href="/es/docs/v1/colecciones/creating-collections/index.html">es</a>
-<a class="" href="/zh/docs/v1/collections/creating-collections/index.html">zh</a>
-</div>
+    <a href="/" class="logo"></a>
+    <div class="languages"><a class="selected" href="/docs/v1/collections/creating-collections/index.html">en</a><a class="" href="/es/docs/v1/colecciones/creating-collections/index.html">es</a><a class="" href="/zh/docs/v1/collections/creating-collections/index.html">zh</a></div>
 </div>
 <div class="tree">
 <div class="item"><a href="/products/index.html">Productos</a></div>
@@ -43,67 +39,68 @@
 <div class="children">
 <div class="item"><a href="/inceptiondb/introduction/index.html">Introduction</a></div>
 </div>
+
 </div>
 <div class="content">
-<div class="versions">
-<a class="selected" href="/docs/v1/collections/creating-collections/index.html">v1</a>
-<a class="" href="/docs/v2/collections/creating-collections/index.html">v2</a>
-</div>
-<div class="breadcrumb"><a class="item" href="/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/docs/v1/collections/index.html">Collections</a><span class="arrow">→</span><a class="item selected" href="/docs/v1/collections/creating-collections/index.html">Creating collections</a></div><div class="document">
-<h1>Creating collections</h1>
+    <div class="versions"><a class="selected" href="/docs/v1/collections/creating-collections/index.html">v1</a><a class="" href="/docs/v2/collections/creating-collections/index.html">v2</a></div>
+    <div class="breadcrumb"><a class="item" href="/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/docs/v1/collections/index.html">Collections</a><span class="arrow">→</span><a class="item selected" href="/docs/v1/collections/creating-collections/index.html">Creating collections</a></div>
+    <div class="index"></div>
+    <div class="document">
+    <h1>Creating collections</h1>
 
 <p>In V1 collections are created like this:</p>
 
-</div>
+
+    </div>
 </div>
 <div class="footer">
-HolaDoc
+    HolaDoc
 </div>
 <script>
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
     
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+    function isElementInViewport (el) {
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
+        
+        
+        
+        
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        
+        if (rect.right < 0 || rect.bottom < 0
             || rect.left > vWidth || rect.top > vHeight)
-        return false;
+            return false;
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+        
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
 
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
 </script>
 </body>
 </html>

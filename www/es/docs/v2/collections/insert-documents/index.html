@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Insert documents</title>
-<meta name="description" content="Insert documents">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/css/style.css" rel="stylesheet">
+    <title>Insert documents</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<!-- insert-documents en src/30_docs/{version}/2_collections/2_insert-documents/insert-documents_en_v1.html v1 -->
+
 <div class="top">
-<a href="/" class="logo"></a>
-<div class="languages">
-<a class="" href="/docs/v2/collections/insert-documents/index.html">en</a>
-<a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">es</a>
-<a class="" href="/zh/docs/v2/collections/insert-documents/index.html">zh</a>
-</div>
+    <a href="/" class="logo"></a>
+    <div class="languages"><a class="" href="/docs/v2/collections/insert-documents/index.html">en</a><a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">es</a><a class="" href="/zh/docs/v2/collections/insert-documents/index.html">zh</a></div>
 </div>
 <div class="tree">
 <div class="item"><a href="/es/products/index.html">Productos</a></div>
@@ -43,24 +39,20 @@
 <div class="children">
 <div class="item"><a href="/es/inceptiondb/introduction/index.html">Introduction</a></div>
 </div>
+
 </div>
 <div class="content">
-<div class="versions">
-<a class="" href="/es/docs/v1/collections/insert-documents/index.html">v1</a>
-<a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">v2</a>
-</div>
-<div class="breadcrumb"><a class="item" href="/es/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/es/docs/v2/colecciones/index.html">Colecciones</a><span class="arrow">→</span><a class="item selected" href="/es/docs/v2/collections/insert-documents/index.html">Insert documents</a></div><div class="index">
-On this page:
-<div class="index-h2">
+    <div class="versions"><a class="" href="/es/docs/v1/collections/insert-documents/index.html">v1</a><a class="selected" href="/es/docs/v2/collections/insert-documents/index.html">v2</a></div>
+    <div class="breadcrumb"><a class="item" href="/es/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item" href="/es/docs/v2/colecciones/index.html">Colecciones</a><span class="arrow">→</span><a class="item selected" href="/es/docs/v2/collections/insert-documents/index.html">Insert documents</a></div>
+    <div class="index"><div class="index-h2">
 <a href="#First%20of%20all...">First of all...</a>
 </div>
 <div class="index-h2">
 <a href="#Second%20of%20all...">Second of all...</a>
 </div>
 </div>
-<div class="document">
-<div class="alert">This has been unchanged since version v1</div>
-<h1>Insert documents</h1>
+    <div class="document">
+    <h1>Insert documents</h1>
 
 <p>To insert documents... bla bla bla</p>
 
@@ -83,56 +75,57 @@ On this page:
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L5"><a style="outline: none; text-decoration:none; color:inherit" href="#L5">5</a></span><span><span style="color:#2aa198">&#34;limit&#34;: 10,
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L6"><a style="outline: none; text-decoration:none; color:inherit" href="#L6">6</a></span><span><span style="color:#2aa198">&#34;filter&#34;: {&#34;color&#34;: &#34;yellow&#34;}
 </span></span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L7"><a style="outline: none; text-decoration:none; color:inherit" href="#L7">7</a></span><span><span style="color:#2aa198">}&#39;</span>
-</span></span></code></pre></code></div>
+</span></span></code></pre></code>
+    </div>
 </div>
 <div class="footer">
-HolaDoc
+    HolaDoc
 </div>
 <script>
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
     
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+    function isElementInViewport (el) {
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
+        
+        
+        
+        
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        
+        if (rect.right < 0 || rect.bottom < 0
             || rect.left > vWidth || rect.top > vHeight)
-        return false;
+            return false;
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+        
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
 
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
 </script>
 </body>
 </html>

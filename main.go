@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/url"
@@ -85,68 +86,39 @@ func main() {
 					continue
 				}
 
-				newFilename := path.Join(c.Www, getOutputPath(node, variation, language, version))
-
-				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
-
-				f, err := os.Create(newFilename)
-				if err != nil {
-					panic(err.Error())
-				}
-
-				f.WriteString(`<!DOCTYPE html>` + "\n")
-				f.WriteString(`<html lang="` + variation.Language + `">` + "\n")
-				f.WriteString(`<head>` + "\n")
-				f.WriteString(`<title>` + variation.Title + `</title>` + "\n")
-				f.WriteString(`<meta name="description" content="` + variation.Title + `">` + "\n")
-				f.WriteString(`<meta name="viewport" content="width=device-width, initial-scale=1">` + "\n")
-				f.WriteString(`<link href="/css/style.css" rel="stylesheet">` + "\n")
-				f.WriteString(`</head>` + "\n")
-				f.WriteString(`<body>` + "\n")
-
-				f.WriteString(
-					fmt.Sprintln(`<!--`, variation.Url, variation.Language, variation.Filename, variation.Version, `-->`),
-				)
-
-				{ // top bar
-					fmt.Fprintln(f, `<div class="top">`)
-					fmt.Fprintln(f, `<a href="/" class="logo"></a>`)
-					fmt.Fprintln(f, `<div class="languages">`)
+				langMenu := ""
+				{
+					langMenu += `<div class="languages">`
 					for _, l := range languages {
 						class := ""
 						if l == language {
 							class += "selected"
 						}
-						fmt.Fprintln(f, `<a class="`+class+`" href="`+getLink(node, l, version)+`">`+l+`</a>`)
+						langMenu += `<a class="` + class + `" href="` + getLink(node, l, version) + `">` + l + `</a>`
 					}
-					fmt.Fprintln(f, `</div>`)
-					fmt.Fprintln(f, `</div>`)
+					langMenu += `</div>`
 				}
 
-				{ // tree
-					f.WriteString(`<div class="tree">` + "\n")
-					index := getIndex(root, node, language, version)
-					f.WriteString(index)
-					f.WriteString(`</div>` + "\n")
-				}
-
-				{ // content
-					f.WriteString(`<div class="content">` + "\n")
-
+				versionMenu := ""
+				{
 					if hasVersions(node) {
-						fmt.Fprintln(f, `<div class="versions">`)
+						versionMenu += `<div class="versions">`
 						for _, v := range versions {
 							class := ""
 							if v == version {
 								class += "selected"
 							}
-							fmt.Fprintln(f, `<a class="`+class+`" href="`+getLink(node, language, v)+`">`+v+`</a>`)
+							versionMenu += `<a class="` + class + `" href="` + getLink(node, language, v) + `">` + v + `</a>`
 						}
-						fmt.Fprintln(f, `</div>`)
+						versionMenu += `</div>`
 					}
+				}
 
-					breadcrumb := getBreadcrumb(node, language, version)
-					f.WriteString(breadcrumb)
+				onThisPage := ""
+
+				content := ""
+
+				{ // content
 
 					var htmlReader io.Reader
 
@@ -176,9 +148,7 @@ func main() {
 						panic(err.Error())
 					}
 
-					{ // print index
-
-						onThisPage := ""
+					{ // index
 
 						for _, n := range nodes {
 							traverseHtml(n, func(node *html.Node) {
@@ -260,92 +230,58 @@ func main() {
 								}
 							})
 						}
-
-						if onThisPage != "" {
-							f.WriteString(`<div class="index">` + "\n")
-							f.WriteString(`On this page:` + "\n")
-							f.WriteString(onThisPage)
-							f.WriteString(`</div>` + "\n")
-						}
 					}
 
 					{ // print content
-						f.WriteString(`<div class="document">` + "\n")
+						b := &bytes.Buffer{}
 
-						if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
-							fmt.Fprintln(f, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
-						}
+						// if variation.Version != "" && version > variation.Version { // todo: make this comparison better (taking into account numbers, not only strings)
+						// 	fmt.Fprintln(b, `<div class="alert">This has been unchanged since version `+variation.Version+`</div>`)
+						// }
 
 						for _, n := range nodes {
-							html.Render(f, n)
+							html.Render(b, n)
 						}
-						f.WriteString(`</div>` + "\n")
+						content = b.String()
 					}
 
-					// 					fmt.Fprintln(f, `<!-- begin wwww.htmlcommentbox.com -->
-					//  <div id="HCB_comment_box" style="height: auto;"><a href="http://www.htmlcommentbox.com">Widget</a> is loading comments...</div>
-					//  <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
-					//  <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24zriY6QFS8E0rsWG5aZV1n."+"&opts=16798&num=10&ts=1708504120915");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-					// <!-- end www.htmlcommentbox.com -->`)
-
-					f.WriteString(`</div>` + "\n")
 				}
 
-				{ // footer
-					f.WriteString(`<div class="footer">` + "\n")
-					f.WriteString(`HolaDoc` + "\n")
-					f.WriteString(`</div>` + "\n")
+				data := map[string]any{
+					"lang":        variation.Language,
+					"langs":       languages,
+					"langMenu":    template.HTML(langMenu),
+					"title":       variation.Title,
+					"url":         variation.Url,
+					"filename":    variation.Filename,
+					"version":     variation.Version,
+					"versions":    versions,
+					"versionMenu": template.HTML(versionMenu),
+					"tree":        template.HTML(getIndex(root, node, language, version)),
+					"breadcrumb":  template.HTML(getBreadcrumb(node, language, version)),
+					"index":       template.HTML(onThisPage),
+					"content":     template.HTML(content),
 				}
 
-				fmt.Fprintln(f, `<script>
+				gohtml, err := os.ReadFile("src/template.gohtml")
+				if err != nil {
+					panic(err.Error())
+				}
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
-    
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+				temp, err := template.New("").Parse(string(gohtml))
+				if err != nil {
+					panic(err.Error())
+				}
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
-            || rect.left > vWidth || rect.top > vHeight)
-        return false;
+				newFilename := path.Join(c.Www, getOutputPath(node, variation, language, version))
+				os.MkdirAll(path.Dir(newFilename), 0777) // todo: handle err
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+				f, err := os.Create(newFilename)
+				if err != nil {
+					panic(err.Error())
+				}
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
-
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
-</script>`)
-
-				f.WriteString(`</body>` + "\n")
-				f.WriteString(`</html>` + "\n")
+				temp.Execute(f, data)
 
 				err = f.Close()
 				if err != nil {

@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-<title>集合</title>
-<meta name="description" content="集合">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/css/style.css" rel="stylesheet">
+    <title>集合</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<!-- collections zh src/30_docs/{version}/2_collections/collections_v1_zh.html v1 -->
+
 <div class="top">
-<a href="/" class="logo"></a>
-<div class="languages">
-<a class="" href="/docs/v1/collections/index.html">en</a>
-<a class="" href="/es/docs/v1/colecciones/index.html">es</a>
-<a class="selected" href="/zh/docs/v1/collections/index.html">zh</a>
-</div>
+    <a href="/" class="logo"></a>
+    <div class="languages"><a class="" href="/docs/v1/collections/index.html">en</a><a class="" href="/es/docs/v1/colecciones/index.html">es</a><a class="selected" href="/zh/docs/v1/collections/index.html">zh</a></div>
 </div>
 <div class="tree">
 <div class="item"><a href="/zh/products/index.html">Productos</a></div>
@@ -43,67 +39,68 @@
 <div class="children">
 <div class="item"><a href="/zh/inceptiondb/introduction/index.html">Introduction</a></div>
 </div>
+
 </div>
 <div class="content">
-<div class="versions">
-<a class="selected" href="/zh/docs/v1/collections/index.html">v1</a>
-<a class="" href="/zh/docs/v2/collections/index.html">v2</a>
-</div>
-<div class="breadcrumb"><a class="item" href="/zh/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/zh/docs/v1/collections/index.html">集合</a></div><div class="document">
-<h1>集合</h1>
+    <div class="versions"><a class="selected" href="/zh/docs/v1/collections/index.html">v1</a><a class="" href="/zh/docs/v2/collections/index.html">v2</a></div>
+    <div class="breadcrumb"><a class="item" href="/zh/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/zh/docs/v1/collections/index.html">集合</a></div>
+    <div class="index"></div>
+    <div class="document">
+    <h1>集合</h1>
 <p>InceptionDB 的集合是一个容器，它包含了一组文档。集合类似于关系数据库中的表，但更加灵活，因为一个集合内的文档可以有不同的字段或结构。这种灵活性是因为 InceptionDB 是一种 NoSQL 数据库，通常允许无模式的数据存储。</p>
 <p>集合中的每个文档都由一个唯一标识符标识，您可以对这些文档执行各种操作，如插入、查询、更新和删除。集合被设计为高度可扩展的，并支持快速数据检索和操作，使其适合处理从简单的键值对到复杂的嵌套对象等广泛的数据类型和结构。</p>
 <p>在 InceptionDB 的上下文中，集合还可能支持高级功能，如索引以实现高效查询、事务以确保数据完整性，以及访问控制机制以保护数据访问。集合是使用 InceptionDB 工作的基础部分，因为它们组织和管理您在数据库中存储的数据。</p>
-</div>
+
+    </div>
 </div>
 <div class="footer">
-HolaDoc
+    HolaDoc
 </div>
 <script>
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
     
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+    function isElementInViewport (el) {
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
+        
+        
+        
+        
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        
+        if (rect.right < 0 || rect.bottom < 0
             || rect.left > vWidth || rect.top > vHeight)
-        return false;
+            return false;
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+        
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
 
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
 </script>
 </body>
 </html>

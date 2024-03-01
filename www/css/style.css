@@ -150,6 +150,7 @@ a:hover {
 .versions a {
   text-decoration: none;
   color: silver;
+  padding: 0 4px;
 }
 
 .versions .selected {
@@ -165,6 +166,7 @@ a:hover {
 .languages a {
   text-decoration: none;
   color: silver;
+  padding: 0 4px;
 }
 
 .languages .selected {

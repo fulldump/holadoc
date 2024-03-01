@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<title>InceptionDB</title>
-<meta name="description" content="InceptionDB">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/css/style.css" rel="stylesheet">
+    <title>InceptionDB</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<!-- inceptiondb es src/50_inceptiondb/inceptiondb_es.md  -->
+
 <div class="top">
-<a href="/" class="logo"></a>
-<div class="languages">
-<a class="" href="/inceptiondb/index.html">en</a>
-<a class="selected" href="/es/inceptiondb/index.html">es</a>
-<a class="" href="/zh/inceptiondb/index.html">zh</a>
-</div>
+    <a href="/" class="logo"></a>
+    <div class="languages"><a class="" href="/inceptiondb/index.html">en</a><a class="selected" href="/es/inceptiondb/index.html">es</a><a class="" href="/zh/inceptiondb/index.html">zh</a></div>
 </div>
 <div class="tree">
 <div class="item"><a href="/es/products/index.html">Productos</a></div>
@@ -43,11 +39,12 @@
 <div class="children">
 <div class="item"><a href="/es/inceptiondb/introduction/index.html">Introduction</a></div>
 </div>
+
 </div>
 <div class="content">
-<div class="index">
-On this page:
-<div class="index-h2">
+    
+    
+    <div class="index"><div class="index-h2">
 <a href="#%C2%BFQu%C3%A9%20es%20InceptionDB%3F">¿Qué es InceptionDB?</a>
 </div>
 <div class="index-h2">
@@ -69,8 +66,8 @@ On this page:
 <a href="#Ejemplo%20de%20c%C3%B3digo">Ejemplo de código</a>
 </div>
 </div>
-<div class="document">
-<h1>InceptionDB</h1>
+    <div class="document">
+    <h1>InceptionDB</h1>
 <p>This is inceptiondb in markdown</p>
 <h2 id="%C2%BFQu%C3%A9%20es%20InceptionDB%3F">¿Qué es InceptionDB?</h2>
 <p>InceptionDB es un sistema de base de datos NoSQL orientado a documentos.</p>
@@ -137,56 +134,57 @@ cualquier sistema operativo y arquitectura, podrías instalar InceptionDB en tu 
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L13"><a style="outline: none; text-decoration:none; color:inherit" href="#L13">13</a></span><span>    <span style="color:#268bd2">&#34;numbers&#34;</span>: [<span style="color:#2aa198">1</span>,<span style="color:#2aa198">2</span>,<span style="color:#2aa198">3</span>]
 </span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#495050" id="L14"><a style="outline: none; text-decoration:none; color:inherit" href="#L14">14</a></span><span>}
 </span></span></code></pre></code></pre>
-</div>
+
+    </div>
 </div>
 <div class="footer">
-HolaDoc
+    HolaDoc
 </div>
 <script>
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
     
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+    function isElementInViewport (el) {
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
+        
+        
+        
+        
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        
+        if (rect.right < 0 || rect.bottom < 0
             || rect.left > vWidth || rect.top > vHeight)
-        return false;
+            return false;
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+        
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
 
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
 </script>
 </body>
 </html>

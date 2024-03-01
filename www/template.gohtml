@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="{{ .lang }}">
+<head>
+    <title>{{ .title }}</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- inceptiondb en src/50_inceptiondb/inceptiondb_en.md  -->
+<div class="top">
+    <a href="/" class="logo"></a>
+    {{ .langMenu }}
+</div>
+<div class="tree">
+{{ .tree }}
+</div>
+<div class="content">
+    {{ .versionMenu }}
+    {{ .breadcrumb }}
+    <div class="index">{{ .index }}</div>
+    <div class="document">
+    {{ .content }}
+    </div>
+</div>
+<div class="footer">
+    HolaDoc
+</div>
+<script>
+
+    // source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
+    function isElementInViewport (el) {
+
+        // //special bonus for those using jQuery
+        // if (typeof $ === "function" && el instanceof $) {
+        //     el = el[0];
+        // }
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        // Return false if it's not in the viewport
+        if (rect.right < 0 || rect.bottom < 0
+            || rect.left > vWidth || rect.top > vHeight)
+            return false;
+
+        // Return true if any of its four corners are visible
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
+
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
+
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
+</script>
+</body>
+</html>

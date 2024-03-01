@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Collections</title>
-<meta name="description" content="Collections">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/css/style.css" rel="stylesheet">
+    <title>Collections</title>
+    <meta name="description" content="inceptiondb">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-<!-- collections en src/30_docs/{version}/2_collections/collections_v1_en.html v1 -->
+
 <div class="top">
-<a href="/" class="logo"></a>
-<div class="languages">
-<a class="selected" href="/docs/v2/collections/index.html">en</a>
-<a class="" href="/es/docs/v2/colecciones/index.html">es</a>
-<a class="" href="/zh/docs/v2/collections/index.html">zh</a>
-</div>
+    <a href="/" class="logo"></a>
+    <div class="languages"><a class="selected" href="/docs/v2/collections/index.html">en</a><a class="" href="/es/docs/v2/colecciones/index.html">es</a><a class="" href="/zh/docs/v2/collections/index.html">zh</a></div>
 </div>
 <div class="tree">
 <div class="item"><a href="/products/index.html">Productos</a></div>
@@ -43,70 +39,70 @@
 <div class="children">
 <div class="item"><a href="/inceptiondb/introduction/index.html">Introduction</a></div>
 </div>
+
 </div>
 <div class="content">
-<div class="versions">
-<a class="" href="/docs/v1/collections/index.html">v1</a>
-<a class="selected" href="/docs/v2/collections/index.html">v2</a>
-</div>
-<div class="breadcrumb"><a class="item" href="/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/docs/v2/collections/index.html">Collections</a></div><div class="document">
-<div class="alert">This has been unchanged since version v1</div>
-<h1>Collections</h1>
+    <div class="versions"><a class="" href="/docs/v1/collections/index.html">v1</a><a class="selected" href="/docs/v2/collections/index.html">v2</a></div>
+    <div class="breadcrumb"><a class="item" href="/docs/index.html">Documentación</a><span class="arrow">→</span><a class="item selected" href="/docs/v2/collections/index.html">Collections</a></div>
+    <div class="index"></div>
+    <div class="document">
+    <h1>Collections</h1>
 <p>An InceptionDB Collection is a container that holds a set of documents. Collections are analogous to tables in relational databases but are more flexible, as the documents within a collection can have different fields or structures. This flexibility is possible because InceptionDB is a NoSQL database, which generally allows for schema-less data storage.</p>
 <p>Each document in a collection is identified by a unique identifier, and you can perform various operations on these documents, such as inserting, querying, updating, and deleting. Collections are designed to be highly scalable and support fast data retrieval and manipulation, making them suitable for handling a wide range of data types and structures, from simple key-value pairs to complex nested objects.</p>
 <p>In the context of InceptionDB, collections might also support advanced features like indexing for efficient queries, transactions for ensuring data integrity, and access control mechanisms for securing data access. Collections are a fundamental part of working with InceptionDB, as they organize and manage the data you store within the database.</p>
 
 
-</div>
+
+    </div>
 </div>
 <div class="footer">
-HolaDoc
+    HolaDoc
 </div>
 <script>
 
-// source: https://stackoverflow.com/questions/49958471/highlight-item-in-an-index-based-on-currently-visible-content-during-scroll
-function isElementInViewport (el) {
     
-    // //special bonus for those using jQuery
-    // if (typeof $ === "function" && el instanceof $) {
-    //     el = el[0];
-    // }
-		
-    var rect     = el.getBoundingClientRect(),
-        vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-        vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-        efp      = function (x, y) { return document.elementFromPoint(x, y) };     
+    function isElementInViewport (el) {
 
-    // Return false if it's not in the viewport
-    if (rect.right < 0 || rect.bottom < 0 
+        
+        
+        
+        
+
+        var rect     = el.getBoundingClientRect(),
+            vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+            vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+            efp      = function (x, y) { return document.elementFromPoint(x, y) };
+
+        
+        if (rect.right < 0 || rect.bottom < 0
             || rect.left > vWidth || rect.top > vHeight)
-        return false;
+            return false;
 
-    // Return true if any of its four corners are visible
-    return (
-          el.contains(efp(rect.left,  rect.top))
-      ||  el.contains(efp(rect.right, rect.top))
-      ||  el.contains(efp(rect.right, rect.bottom))
-      ||  el.contains(efp(rect.left,  rect.bottom))
-    );
-}
+        
+        return (
+            el.contains(efp(rect.left,  rect.top))
+            ||  el.contains(efp(rect.right, rect.top))
+            ||  el.contains(efp(rect.right, rect.bottom))
+            ||  el.contains(efp(rect.left,  rect.bottom))
+        );
+    }
 
-function highlightIndex() {
-	let v = false;
-	document.querySelectorAll('.index a').forEach(a => {
-		const el = document.getElementById(a.getAttribute('href').slice(1));
-		
-		if (!v && isElementInViewport(el)) {
-			a.classList.add('active');	
-			v = true;
-		} else {
-			a.classList.remove('active');	
-		}
-	});
-}
+    function highlightIndex() {
+        let v = false;
+        document.querySelectorAll('.index a').forEach(a => {
+            const el = document.getElementById(a.getAttribute('href').slice(1));
 
-document.addEventListener('scroll', highlightIndex, true);
-document.addEventListener('load', highlightIndex, true);
+            if (!v && isElementInViewport(el)) {
+                a.classList.add('active');
+                v = true;
+            } else {
+                a.classList.remove('active');
+            }
+        });
+    }
+
+    document.addEventListener('scroll', highlightIndex, true);
+    document.addEventListener('load', highlightIndex, true);
 </script>
 </body>
 </html>
