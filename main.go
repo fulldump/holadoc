@@ -307,7 +307,6 @@ func main() {
 						}
 
 						n := node
-
 						for n != nil {
 							if n == target {
 								return true

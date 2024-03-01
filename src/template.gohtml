@@ -5,13 +5,13 @@
     <meta name="description" content="inceptiondb">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/blue.css" rel="stylesheet">
 </head>
 <body>
 <!-- inceptiondb en src/50_inceptiondb/inceptiondb_en.md  -->
 <div class="top">
     <a href="/" class="logo"></a>
     {{ .langMenu }}
-
     <div class="main-menu">
         {{ link "products" }}
         {{ link "pricing" }}
@@ -20,9 +20,12 @@
     </div>
 </div>
 <div class="tree">
-    {{ if isUnder "docs" }}
-        {{ tree "docs" }}
-    {{ end }}
+{{ if isUnder "docs" }}
+    {{ tree "docs" }}
+{{ end }}
+{{ if isUnder "inceptiondb" }}
+    {{ tree "inceptiondb" }}
+{{ end }}
 </div>
 <div class="content">
     {{ .versionMenu }}
@@ -34,7 +37,6 @@
 </div>
 <div class="footer">
     HolaDoc
-
 </div>
 <script>
 
