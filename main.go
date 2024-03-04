@@ -720,6 +720,11 @@ func readNodes(root *Node, src, www string) { // todo: return errors instead of 
 			base := strings.ToLower(strings.TrimSuffix(path.Base(entry.Name()), path.Ext(entry.Name())))
 			parts := strings.Split(base, "_")
 
+			if len(parts) == 1 {
+				copyFile(path.Join(src, entry.Name()), path.Join(www, entry.Name()))
+				continue
+			}
+
 			friendlyUrl := parts[0]
 			lang := ""
 			version := ""
