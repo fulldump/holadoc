@@ -29,6 +29,7 @@
 
 		let values = {};
 		let updates = {};
+		let events = {};
 
 		traverse(div, function(node) {
 			window.lala = node
@@ -62,6 +63,14 @@
 			if (node.nodeType === 1) {
 				// dom node, look for attributes
 				for (let attribute of node.attributes) {
+
+					if (attribute.name['0'] === '@') {
+						let name = attribute.name.substring(1);
+						events[name] = events[name] || [];
+						events[name].push(node);
+						continue;
+					}
+
 					let text = attribute.value;
 					let parts = [];
 					let placeholders = {};
@@ -90,6 +99,8 @@
 			}
 		});
 
+		console.log(events);
+
 		// move nodes to parent
 		let refs = [];
 		for (node of div.childNodes) {
@@ -116,7 +127,16 @@
 					u.node.textContent = text;
 				});
 
-			}
+			},
+			event(name, type, callback) {
+				let event = events[name];
+				if (!event) return;
+				for (let e of event) {
+					e.addEventListener(type, function (e) {
+						callback(e, values);
+					}, true);
+				}
+			},
 		}
 	}
 
@@ -137,7 +157,7 @@
 		let c = Wrap(document.getElementById('list-comments'), `
 		hello {{ user }} today is {{date}}, cuéntame más {{user}}!
 		<div style="color: {{ color }};">
-			<div class="user">User: {{ user }}</div>
+			<div class="user" @user>User: {{ user }}</div>
 			<div class="comment">{{ comment }}</div>
 		</div>
 		`);
@@ -145,6 +165,9 @@
 		c.set('date', 'Monday')
 		c.set('comment', e.comment)
 		c.set('color', e.color)
+		c.event('user', 'click', function(e, v) {
+			alert('Hello '+v.user);
+		});
 	});
 
 </script>
