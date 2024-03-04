@@ -25,7 +25,6 @@
 		let div = document.createElement('div');
 		div.innerHTML = t;
 
-		// let pattern = /({{[^}]+}})/mg;
 		let pattern = /{{([^}]+)}}/mg;
 
 		let values = {};
@@ -61,12 +60,35 @@
 				parts.push(text.substring(lastIndex))
 			}
 			if (node.nodeType === 1) {
-				console.log(node.attributes)
 				// dom node, look for attributes
+				for (let attribute of node.attributes) {
+					let text = attribute.value;
+					let parts = [];
+					let placeholders = {};
+
+					let it = text.matchAll(pattern);
+					let lastIndex = 0;
+					for (;;) {
+						let match = it.next();
+						if (match.done) break;
+
+						parts.push(text.substring(lastIndex, match.value.index))
+						let placeholder = match.value[1].trim();
+						placeholders[parts.length] = placeholder;
+						parts.push(placeholder);
+						values[placeholder] = '';
+						updates[placeholder] = updates[placeholder] || [];
+						updates[placeholder].push({
+							node: attribute,
+							parts: parts,
+							placeholders: placeholders,
+						});
+						lastIndex = match.value.index + match.value[0].length;
+					}
+					parts.push(text.substring(lastIndex))
+				}
 			}
 		});
-
-		console.log('updates', updates);
 
 		// move nodes to parent
 		let refs = [];
@@ -107,14 +129,14 @@
 		{
 			user: "menganez",
 			comment: "Hasta luego mundo",
-			color: 'orange',
+			color: 'green',
 		},
 	];
 
 	comments.forEach(e => {
 		let c = Wrap(document.getElementById('list-comments'), `
 		hello {{ user }} today is {{date}}, cuéntame más {{user}}!
-		<div style="color: red;">
+		<div style="color: {{ color }};">
 			<div class="user">User: {{ user }}</div>
 			<div class="comment">{{ comment }}</div>
 		</div>
@@ -124,17 +146,6 @@
 		c.set('comment', e.comment)
 		c.set('color', e.color)
 	});
-
-
-	/*
-	<div>
-		<div class="user">User: {{ user }}</div>
-		<div class="comment">{{ comment }}</div>
-	</div>
-	jaja
-	<a href="https://www.treeweb.es/">tree</a>
-	* */
-
 
 </script>
 
