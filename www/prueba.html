@@ -22,6 +22,11 @@
 
 
 	function Wrap(parent, t) {
+
+		if ('string' == typeof parent) {
+			parent = document.querySelector(parent);
+		}
+
 		let div = document.createElement('div');
 		div.innerHTML = t;
 
@@ -99,8 +104,6 @@
 			}
 		});
 
-		console.log(events);
-
 		// move nodes to parent
 		let refs = [];
 		for (node of div.childNodes) {
@@ -109,7 +112,12 @@
 		refs.forEach(node => parent.append(node));
 
 		return {
-			set(key, value){
+			setValues(o) {
+				for (let k in o) {
+					this.setValue(k, o[k])
+				}
+			},
+			setValue(key, value){
 				let update = updates[key];
 				if (!update) return;
 
@@ -128,7 +136,7 @@
 				});
 
 			},
-			event(name, type, callback) {
+			setEvent(name, type, callback) {
 				let event = events[name];
 				if (!event) return;
 				for (let e of event) {
@@ -145,27 +153,26 @@
 			user: "fulanez",
 			comment: "Hola mundo",
 			color: 'orange',
+			date: 'Monday',
 		},
 		{
 			user: "menganez",
 			comment: "Hasta luego mundo",
 			color: 'green',
+			date: 'Sunday',
 		},
 	];
 
 	comments.forEach(e => {
-		let c = Wrap(document.getElementById('list-comments'), `
+		let c = Wrap('#list-comments', `
 		hello {{ user }} today is {{date}}, cuéntame más {{user}}!
 		<div style="color: {{ color }};">
 			<div class="user" @user>User: {{ user }}</div>
 			<div class="comment">{{ comment }}</div>
 		</div>
 		`);
-		c.set('user', e.user)
-		c.set('date', 'Monday')
-		c.set('comment', e.comment)
-		c.set('color', e.color)
-		c.event('user', 'click', function(e, v) {
+		c.setValues(e);
+		c.setEvent('user', 'click', function(e, v) {
 			alert('Hello '+v.user);
 		});
 	});
