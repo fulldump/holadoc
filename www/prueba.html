@@ -1,0 +1,144 @@
+
+<!doctype html>
+<html>
+<head>
+
+</head>
+<body>
+
+
+<div id="list-comments"></div>
+
+<script>
+
+	function traverse(d, callback) {
+		// z = document.createElement('div')
+		// z.childNodes
+		for (c of d.childNodes) {
+			callback(c);
+			traverse(c, callback);
+		}
+	}
+
+
+	function Wrap(parent, t) {
+		let div = document.createElement('div');
+		div.innerHTML = t;
+
+		// let pattern = /({{[^}]+}})/mg;
+		let pattern = /{{([^}]+)}}/mg;
+
+		let values = {};
+		let updates = {};
+
+		traverse(div, function(node) {
+			window.lala = node
+			if (node.nodeType === 3) {
+				// text node, look for replacements
+				let text = node.textContent;
+				let parts = [];
+				let placeholders = {};
+
+				let it = text.matchAll(pattern);
+				let lastIndex = 0;
+				for (;;) {
+					let match = it.next();
+					if (match.done) break;
+
+					parts.push(text.substring(lastIndex, match.value.index))
+					let placeholder = match.value[1].trim();
+					placeholders[parts.length] = placeholder;
+					parts.push(placeholder);
+					values[placeholder] = '';
+					updates[placeholder] = updates[placeholder] || [];
+					updates[placeholder].push({
+						node: node,
+						parts: parts,
+						placeholders: placeholders,
+					});
+					lastIndex = match.value.index + match.value[0].length;
+				}
+				parts.push(text.substring(lastIndex))
+			}
+			if (node.nodeType === 1) {
+				console.log(node.attributes)
+				// dom node, look for attributes
+			}
+		});
+
+		console.log('updates', updates);
+
+		// move nodes to parent
+		let refs = [];
+		for (node of div.childNodes) {
+			refs.push(node);
+		}
+		refs.forEach(node => parent.append(node));
+
+		return {
+			set(key, value){
+				let update = updates[key];
+				if (!update) return;
+
+				values[key] = value;
+
+				update.forEach(u => {
+					let text = '';
+					for (let i in u.parts) {
+						if (u.placeholders[i]) {
+							text += values[u.placeholders[i]];
+						} else {
+							text += u.parts[i]
+						}
+					}
+					u.node.textContent = text;
+				});
+
+			}
+		}
+	}
+
+	let comments = [
+		{
+			user: "fulanez",
+			comment: "Hola mundo",
+			color: 'orange',
+		},
+		{
+			user: "menganez",
+			comment: "Hasta luego mundo",
+			color: 'orange',
+		},
+	];
+
+	comments.forEach(e => {
+		let c = Wrap(document.getElementById('list-comments'), `
+		hello {{ user }} today is {{date}}, cuéntame más {{user}}!
+		<div style="color: red;">
+			<div class="user">User: {{ user }}</div>
+			<div class="comment">{{ comment }}</div>
+		</div>
+		`);
+		c.set('user', e.user)
+		c.set('date', 'Monday')
+		c.set('comment', e.comment)
+		c.set('color', e.color)
+	});
+
+
+	/*
+	<div>
+		<div class="user">User: {{ user }}</div>
+		<div class="comment">{{ comment }}</div>
+	</div>
+	jaja
+	<a href="https://www.treeweb.es/">tree</a>
+	* */
+
+
+</script>
+
+
+
+</body>
+</html>
