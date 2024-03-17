@@ -27,12 +27,15 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
+var VERSION = "dev"
+
 type config struct {
 	Src       string `json:"src"`
 	Www       string `json:"www"`
 	Versions  string `json:"versions" usage:"default version is the first one"`
 	Languages string `json:"languages" usage:"default language is the first one"`
 	Serve     string `json:"serve" usage:"Address to serve files locally, example ':8080'"`
+	Version   bool   `json:"version" usage:"Display version and exit"`
 }
 
 // todo: avoid globals
@@ -48,6 +51,11 @@ func main() {
 		Languages: "en,es,zh",
 	}
 	goconfig.Read(&c)
+
+	if c.Version {
+		fmt.Println(VERSION)
+		os.Exit(0)
+	}
 
 	if c.Serve != "" {
 

@@ -1,12 +1,9 @@
-
 <!doctype html>
 <html>
 <head>
 	<script src="wrap.js"></script>
 </head>
 <body>
-
-
 <div id="list-comments"></div>
 
 <script>
@@ -27,20 +24,19 @@
 
 	comments.forEach(e => {
 		let c = Wrap('#list-comments', `
-		hello {{ user }} today is {{date}}, cuéntame más {{user}}!
-		<div style="color: {{ color }};">
-			<div class="user" @user>User: {{ user }}</div>
-			<div class="comment">{{ comment }}</div>
-		</div>
-		`);
+hello {{ user }} today is {{date}}, cuéntame más {{user}}!
+<div style="color: {{ color }};">
+<div class="user" @user>User: {{ user }}</div>
+<div class="comment">{{ comment }}</div>
+</div>
+`);
 		c.setValues(e);
-		c.setEvent('user', 'click', function(e, v) {
-			alert('Hello '+v.user);
+		c.setEvent('user', 'click', function (e, v) {
+			alert('Hello ' + v.user);
 		});
 	});
 
 </script>
-
 
 
 </body>
