@@ -5,7 +5,22 @@ This is a template engine to generate documentation for hola.cloud services.
 This project is important because documentation plays a relevant role in
 the adoption of the platform.
 
+![img.png](img.png)
+
+## Getting started
+
+This repository provides an example project in `src`. To build and generate
+the site in `www` just run `make run`.
+
+You can also run `make serve` to build and serve on [localhost:8080](http://localhost:8080/).
+
 ## Requirements
+
+There are already [pre-build binaries](https://github.com/fulldump/holadoc/releases) ready to download and use.
+
+If you want to build from sources, it requires Go (Go 1.22 and beyond does work).
+
+## Features
 
 The requirements are as follows:
 
