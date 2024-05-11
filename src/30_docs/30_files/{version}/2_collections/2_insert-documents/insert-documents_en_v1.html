@@ -1,0 +1,26 @@
+<h1>Insert documents</h1>
+
+<p>To insert documents... bla bla bla</p>
+
+<h2>First of all...</h2>
+
+<code lang="javascript">
+let result = fetch('https://incepitondb.io/v0/databases/xxxx/collections/fruits:insert', {
+	method: 'POST',
+	body: JSON.stringify({
+		"hello": "world",
+	}),
+});
+</code>
+
+<h2>Second of all...</h2>
+
+<code lang="bash">
+curl https://inceptiondb.hola.cloud/v1/databases/ceceb998-c208-4efe-ae20-a81feee5aab9/collections/example:find \
+-H 'Api-Key: 45a685f9-9c34-453a-95d1-7c033e96109b' \
+-H 'Api-Secret: 5b27b23a-96f1-4d3d-b631-fbd85f73028b' \
+-d '{
+"limit": 10,
+"filter": {"color": "yellow"}
+}'
+</code>
