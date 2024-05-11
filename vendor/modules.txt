@@ -31,14 +31,14 @@ github.com/alecthomas/chroma/lexers/x
 github.com/alecthomas/chroma/lexers/y
 github.com/alecthomas/chroma/lexers/z
 github.com/alecthomas/chroma/styles
-# github.com/dlclark/regexp2 v1.4.0
-## explicit
+# github.com/dlclark/regexp2 v1.11.0
+## explicit; go 1.13
 github.com/dlclark/regexp2
 github.com/dlclark/regexp2/syntax
 # github.com/fulldump/goconfig v1.5.0
 ## explicit
 github.com/fulldump/goconfig
-# github.com/yuin/goldmark v1.7.0
+# github.com/yuin/goldmark v1.7.1
 ## explicit; go 1.19
 github.com/yuin/goldmark
 github.com/yuin/goldmark/ast
@@ -49,7 +49,7 @@ github.com/yuin/goldmark/renderer
 github.com/yuin/goldmark/renderer/html
 github.com/yuin/goldmark/text
 github.com/yuin/goldmark/util
-# golang.org/x/net v0.21.0
+# golang.org/x/net v0.25.0
 ## explicit; go 1.18
 golang.org/x/net/html
 golang.org/x/net/html/atom
