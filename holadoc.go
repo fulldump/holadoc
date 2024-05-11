@@ -1,4 +1,4 @@
-package main
+package holadoc
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"net/http"
 	"net/url"
 	"os"
 	"path"
@@ -19,7 +18,6 @@ import (
 	html2 "github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
-	"github.com/fulldump/goconfig"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	goldmarkHtml "github.com/yuin/goldmark/renderer/html"
@@ -27,9 +25,7 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
-var VERSION = "dev"
-
-type config struct {
+type Config struct {
 	Src       string `json:"src"`
 	Www       string `json:"www"`
 	Versions  string `json:"versions" usage:"default version is the first one"`
@@ -42,31 +38,7 @@ type config struct {
 var versions []string
 var languages []string
 
-func main() {
-
-	c := config{
-		Src:       "src/",
-		Www:       "www/",
-		Versions:  "v1,v2",
-		Languages: "en,es,zh",
-	}
-	goconfig.Read(&c)
-
-	if c.Version {
-		fmt.Println(VERSION)
-		os.Exit(0)
-	}
-
-	if c.Serve != "" {
-
-		s := &http.Server{
-			Addr:    c.Serve,
-			Handler: http.FileServer(http.Dir(c.Www)),
-		}
-
-		s.ListenAndServe()
-		return
-	}
+func HolaDoc(c Config) {
 
 	// clear output
 	_ = os.RemoveAll(c.Www)
