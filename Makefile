@@ -6,7 +6,7 @@ FLAGS = -ldflags "\
 
 .PHONY: build
 build:
-	go build $(FLAGS) -o bin/holadoc holadoc
+	go build $(FLAGS) -o bin/holadoc github.com/fulldump/holadoc
 
 .PHONY: release
 release: clean
@@ -20,11 +20,11 @@ release: clean
 
 .PHONY: run
 run:
-	go run $(FLAGS) holadoc
+	go run $(FLAGS) github.com/fulldump/holadoc
 
 .PHONY: serve
 serve:
-	SERVE=:8080 go run $(FLAGS) holadoc
+	SERVE=:8080 go run $(FLAGS) github.com/fulldump/holadoc
 
 .PHONY: version
 version:

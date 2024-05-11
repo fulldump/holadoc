@@ -1,4 +1,4 @@
-module holadoc
+module github.com/fulldump/holadoc
 
 go 1.22.0
 
